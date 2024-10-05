@@ -1,8 +1,8 @@
 'use client';
 
 import { useQuery } from '@tanstack/react-query';
-import axios from 'axios';
 import { VotingSessionVotesResponse } from '../../types/GetVotingSessionVotesResponse';
+import { api } from '@/lib/api';
 
 type UseGetVotingSessionVotesQueryProps = {
   votingSessionId: string;
@@ -14,7 +14,7 @@ export const useGetVotingSessionVotesQuery = ({
   return useQuery({
     queryKey: ['votingSessionVotes', votingSessionId],
     queryFn: async () => {
-      const response = await axios.get<VotingSessionVotesResponse>(
+      const response = await api.get<VotingSessionVotesResponse>(
         `https://dadosabertos.camara.leg.br/api/v2/votacoes/${votingSessionId}/votos`,
         {
           headers: {

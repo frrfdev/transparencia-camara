@@ -1,8 +1,8 @@
 'use client';
 
 import { useQuery } from '@tanstack/react-query';
-import axios from 'axios';
 import { ProjectVotingSessionsResponse } from '../../types/GetProjectVotingSessionsResponse';
+import { api } from '@/lib/api';
 
 type UseGetProjectVotingSessionsQueryProps = {
   projectId: string;
@@ -14,8 +14,8 @@ export const useGetProjectVotingSessionsQuery = ({
   return useQuery({
     queryKey: ['projectVotingSessions', projectId],
     queryFn: async () => {
-      const response = await axios.get<ProjectVotingSessionsResponse>(
-        `https://dadosabertos.camara.leg.br/api/v2/proposicoes/${projectId}/votacoes?ordem=DESC&ordenarPor=dataHoraRegistro`,
+      const response = await api.get<ProjectVotingSessionsResponse>(
+        `proposicoes/${projectId}/votacoes?ordem=DESC&ordenarPor=dataHoraRegistro`,
         {
           headers: {
             'Content-Type': 'application/json',

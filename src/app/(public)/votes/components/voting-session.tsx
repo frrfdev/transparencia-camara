@@ -63,13 +63,19 @@ const VotingSessionAccordion = ({
     string | null
   >(null);
 
+  const filterVotingSessionsWithVotes = (votingSessions: VotingSession[]) => {
+    return votingSessions.filter((votingSession) =>
+      votingSession.descricao.includes('Total:')
+    );
+  };
+
   return (
     <Accordion
       type="single"
       collapsible
       onValueChange={setSelectedVotingSessionId}
     >
-      {votingSessions.map((votingSession) => (
+      {filterVotingSessionsWithVotes(votingSessions).map((votingSession) => (
         <AccordionItem value={votingSession.id} key={votingSession.id}>
           <AccordionTrigger>
             <VotingSessionAccordionTrigger votingSession={votingSession} />
