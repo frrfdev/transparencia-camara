@@ -1,8 +1,9 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import React from 'react';
-import { Providers } from './providers';
+import { Providers } from './providers/providers';
 import { Inter } from 'next/font/google';
+import { Footer } from '@/components/footer';
 
 const montserrat = Inter({
   weight: ['400', '500', '700', '900'],
@@ -22,7 +23,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${montserrat.className} antialiased`}>
-        <Providers>{children}</Providers>
+        <Providers>
+          <div className="h-screen overflow-hidden w-full flex flex-col">
+            <div className="h-full w-full overflow-hidden">{children}</div>
+            <Footer></Footer>
+          </div>
+        </Providers>
       </body>
     </html>
   );

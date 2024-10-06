@@ -1,19 +1,20 @@
 'use client';
 
-import React, { useState } from 'react';
-import {
-  GetPropositionsParams,
-  useGetPropositionsQuery,
-} from '../hooks/api/use-get-propositions.query';
+import React, { useEffect, useState } from 'react';
+import { GetPropositionsParams, useGetPropositionsQuery } from '../hooks/api/use-get-propositions.query';
 import { usePagination } from '@/hooks/use-pagination';
 import { List } from '@/components/ui/list';
-import { DiagonalBackground } from '@/components/ui/diagonal-background';
+import { PropositionDetails } from './proposition-details';
+import { useMenuContext } from '@/app/providers/menu-provider';
+import { PropositionsFilter } from './propositions-filter';
+import { cn } from '@/lib/utils';
 
 export const PropositionsList = () => {
   const { paginationConfig, dispatchPagination } = usePagination();
-  const [selectedPropositionId, setSelectedPropositionId] = useState<
-    number | null
-  >(null);
+  const { addOption } = useMenuContext();
+
+  const [selectedPropositionId, setSelectedPropositionId] = useState<number | null>(null);
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
 
   const { data: propositions } = useGetPropositionsQuery({
     ...paginationConfig,
@@ -24,34 +25,43 @@ export const PropositionsList = () => {
     },
   } as GetPropositionsParams);
 
-  const selectedProposition = propositions?.data?.find(
-    (a) => a.id === selectedPropositionId
-  );
+  const selectedProposition = propositions?.data?.find((a) => a.id === selectedPropositionId);
+
+  useEffect(() => {
+    addOption({
+      key: 'y',
+      label: 'Filtro',
+      icon: 'Y',
+      action: () => {
+        setIsFilterOpen((old) => !old);
+      },
+    });
+  }, []);
 
   return (
-    <DiagonalBackground>
-      <div className="h-full flex gap-2">
-        <List className="flex flex-col p-10 gap-4 h-full w-1/2 overflow-y-auto">
-          {propositions?.data?.map((a) => (
-            <button
-              className="font-medium rounded-full bg-white shadow-[rgba(17,_17,_26,_0.1)_0px_0px_16px] focus:shadow-[rgba(249,_115,_22,_0.4)_0px_0px_16px] p-4 px-10 focus:bg-gradient-to-r from-orange-500 to-orange-400 focus:text-white focus:font-bold border-0 outline-0 hover:bg-orange-200	"
-              key={a.id}
-              onFocus={() => {
-                setSelectedPropositionId(a.id);
-              }}
-            >
-              <span className="line-clamp-2">{a.ementa}</span>
-            </button>
-          ))}
-        </List>
-        {selectedPropositionId && (
-          <div className="h-full w-1/2 p-10">
-            <div className="h-full w-full backdrop-blur-md bg-white p-10 shadow-[rgba(17,_17,_26,_0.1)_0px_0px_16px] rounded-lg">
-              <div>{selectedProposition?.ementa}</div>
-            </div>
-          </div>
-        )}
-      </div>
-    </DiagonalBackground>
+    <div className="h-full flex gap-2 pb-4 overflow-hidden">
+      <List className="flex flex-col p-10 pt-4 gap-4 h-full w-1/2 overflow-y-auto">
+        {propositions?.data?.map((proposition) => (
+          <button
+            className={cn(
+              'font-medium flex gap-6 items-center rounded-full bg-white shadow-[rgba(17,_17,_26,_0.1)_0px_0px_16px] p-4 px-10  border-0 outline-0 hover:bg-orange-200',
+              'focus:bg-gradient-to-r from-neutral-950 to-neutral-900 focus:text-white focus:font-bold',
+              proposition.id === selectedPropositionId &&
+                'bg-gradient-to-r from-neutral-950 to-neutral-900 text-white font-bold'
+            )}
+            key={proposition.id}
+            tabIndex={1}
+            onFocus={() => {
+              setSelectedPropositionId(proposition.id);
+            }}
+          >
+            <span className="font-bold">{proposition.numero}</span>
+            <span className="line-clamp-2">{proposition.ementa}</span>
+          </button>
+        ))}
+      </List>
+      {selectedPropositionId && selectedProposition && <PropositionDetails proposition={selectedProposition} />}
+      <PropositionsFilter onFilter={() => {}} isOpen={isFilterOpen} />
+    </div>
   );
 };

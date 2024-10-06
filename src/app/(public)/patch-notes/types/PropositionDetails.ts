@@ -1,0 +1,38 @@
+export type PropositionDetails = {
+  id: number;
+  uri: string;
+  siglaTipo: string;
+  codTipo: number;
+  numero: number;
+  ano: number;
+  ementa: string;
+  dataApresentacao: string;
+  uriOrgaoNumerador: string | null;
+  statusProposicao: {
+    dataHora: string;
+    sequencia: number;
+    siglaOrgao: string;
+    uriOrgao: string;
+    uriUltimoRelator: string | null;
+    regime: string;
+    descricaoTramitacao: string;
+    codTipoTramitacao: string;
+    descricaoSituacao: string | null;
+    codSituacao: string | null;
+    despacho: string;
+    url: string | null;
+    ambito: string;
+    apreciacao: string;
+  };
+  uriAutores: string;
+  descricaoTipo: string;
+  ementaDetalhada: string | null;
+  keywords: string | null;
+  uriPropPrincipal: string | null;
+  uriPropAnterior: string | null;
+  uriPropPosterior: string | null;
+  urlInteiroTeor: string;
+  urnFinal: string | null;
+  texto: string | null;
+  justificativa: string | null;
+};
