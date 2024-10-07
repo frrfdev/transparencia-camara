@@ -25,7 +25,9 @@ export const DiagonalBackground = ({ children }: DiagonalBackgroundProps) => {
       >
         <DiagonalYellow className="w-auto h-full drop-shadow-[rgba(17,_17,_26,_0.1)_-10px_0px_16px]"></DiagonalYellow>
       </motion.div>
-      <div className="relative z-10 w-full h-full flex flex-col overflow-hidden">{children}</div>
+      <div className="relative z-10 w-full h-full flex flex-col overflow-hidden">
+        {children}
+      </div>
     </div>
   );
 };

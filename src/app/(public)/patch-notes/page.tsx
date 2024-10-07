@@ -5,7 +5,7 @@ import { DiagonalBackground } from '@/components/ui/diagonal-background';
 
 export const PatchNotes = () => {
   return (
-    <div className="h-full overflow-hidden">
+    <div className="h-full w-full overflow-hidden">
       <DiagonalBackground>
         <div className="flex w-full p-4 pb-1 gap-4 items-center">
           <ScrollText size={50} />

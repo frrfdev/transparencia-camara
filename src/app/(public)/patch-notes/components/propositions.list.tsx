@@ -1,7 +1,10 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { GetPropositionsParams, useGetPropositionsQuery } from '../hooks/api/use-get-propositions.query';
+import {
+  GetPropositionsParams,
+  useGetPropositionsQuery,
+} from '../hooks/api/use-get-propositions.query';
 import { usePagination } from '@/hooks/use-pagination';
 import { List } from '@/components/ui/list';
 import { PropositionDetails } from './proposition-details';
@@ -13,7 +16,9 @@ export const PropositionsList = () => {
   const { paginationConfig, dispatchPagination } = usePagination();
   const { addOption } = useMenuContext();
 
-  const [selectedPropositionId, setSelectedPropositionId] = useState<number | null>(null);
+  const [selectedPropositionId, setSelectedPropositionId] = useState<
+    number | null
+  >(null);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
 
   const { data: propositions } = useGetPropositionsQuery({
@@ -25,7 +30,9 @@ export const PropositionsList = () => {
     },
   } as GetPropositionsParams);
 
-  const selectedProposition = propositions?.data?.find((a) => a.id === selectedPropositionId);
+  const selectedProposition = propositions?.data?.find(
+    (a) => a.id === selectedPropositionId
+  );
 
   useEffect(() => {
     addOption({
@@ -39,7 +46,7 @@ export const PropositionsList = () => {
   }, []);
 
   return (
-    <div className="h-full flex gap-2 pb-4 overflow-hidden">
+    <div className="h-full w-full flex gap-2 pb-4 relative overflow-hidden">
       <List className="flex flex-col p-10 pt-4 gap-4 h-full w-1/2 overflow-y-auto">
         {propositions?.data?.map((proposition) => (
           <button
@@ -60,7 +67,10 @@ export const PropositionsList = () => {
           </button>
         ))}
       </List>
-      {selectedPropositionId && selectedProposition && <PropositionDetails proposition={selectedProposition} />}
+      {selectedPropositionId && selectedProposition && (
+        <PropositionDetails proposition={selectedProposition} />
+      )}
+
       <PropositionsFilter onFilter={() => {}} isOpen={isFilterOpen} />
     </div>
   );

@@ -84,7 +84,7 @@ export type ComboBoxProps<T> = Omit<Select.SelectProps, 'onValueChange'> & {
   categoryKey?: string;
   categoryRender?: (key: string) => React.ReactNode;
   optionClassName?: string;
-  onFocus?: () => void;
+  onFocus?: (event: React.FocusEvent<HTMLInputElement>) => void;
 };
 
 const getNestedProperty = (obj: unknown, path: string) => {
@@ -354,8 +354,8 @@ const Combo = <T extends OptionData>(
         className="w-0 h-0 absolute"
         tabIndex={0}
         ref={ref}
-        onFocus={() => {
-          onFocus?.();
+        onFocus={(e) => {
+          onFocus?.(e);
           setIsFocused(true);
         }}
         onKeyDown={(e) => {
