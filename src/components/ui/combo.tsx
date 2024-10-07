@@ -2,29 +2,11 @@ import * as React from 'react';
 
 import type * as Select from '@radix-ui/react-select';
 import { useDebounce, useIntersectionObserver } from '@uidotdev/usehooks';
-import {
-  Check,
-  ChevronsUpDown,
-  LoaderCircle,
-  X,
-  ChevronDown,
-  ChevronUp,
-} from 'lucide-react';
+import { Check, ChevronsUpDown, LoaderCircle, X, ChevronDown, ChevronUp } from 'lucide-react';
 
 import { buttonVariants } from './button';
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from './collapsible';
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from './command';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from './collapsible';
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from './command';
 import { Popover, PopoverContent, PopoverTrigger } from './popover';
 import { cn } from '@/lib/utils';
 
@@ -59,16 +41,13 @@ export type ComboBoxItem = {
   value: string;
 };
 
-export type ComboBoxProps<T> = Omit<Select.SelectProps, 'onValueChange'> & {
+export type ComboBoxProps<T> = Omit<Select.SelectProps, 'onValueChange' | 'value'> & {
   placeholder?: string;
   selectAll?: boolean;
   searchPlaceholder?: string;
   options: T[];
   initialOptions?: T[];
-  onValueChange?: (
-    value: string | null,
-    option: ComboBoxProps<T>['options'][number] | null
-  ) => void;
+  onValueChange?: (value: string | null, option: ComboBoxProps<T>['options'][number] | null) => void;
   onChange?: (value: SelectChangeNativeEvent) => void;
   emptyMessage?: string;
   variant?: 'normal' | 'outlined';
@@ -88,9 +67,7 @@ export type ComboBoxProps<T> = Omit<Select.SelectProps, 'onValueChange'> & {
 };
 
 const getNestedProperty = (obj: unknown, path: string) => {
-  return path
-    .split('.')
-    .reduce((acc, part) => acc && acc[part as keyof typeof acc], obj);
+  return path.split('.').reduce((acc, part) => acc && acc[part as keyof typeof acc], obj);
 };
 
 const Combo = <T extends OptionData>(
@@ -130,16 +107,12 @@ const Combo = <T extends OptionData>(
   });
 
   const [open, setOpen] = React.useState(false);
-  const [internalValue, setInternalValue] = React.useState<string | string[]>(
-    mode === 'multi' ? [] : ''
-  );
+  const [internalValue, setInternalValue] = React.useState<string | string[]>(mode === 'multi' ? [] : '');
   const [filteredOptions, setFilteredOptions] = React.useState<T[]>([]);
   const [searchText, setSearchText] = React.useState<string>('');
   const [isTyping, setIsTyping] = React.useState(false);
   const [selectedOptions, setSelectedOptions] = React.useState<T[]>([]);
-  const [openCategories, setOpenCategories] = React.useState<
-    Record<string, boolean>
-  >({});
+  const [openCategories, setOpenCategories] = React.useState<Record<string, boolean>>({});
   const [isFocused, setIsFocused] = React.useState(false);
 
   const search = useDebounce(searchText, 300);
@@ -150,13 +123,9 @@ const Combo = <T extends OptionData>(
     return internalValue
       ? isMulti
         ? (value as string[])?.map((val) =>
-            [...selectedOptions, ...initialOptions, ...options].find(
-              (option) => option.value === val
-            )
+            [...selectedOptions, ...initialOptions, ...options].find((option) => option.value === val)
           )
-        : [...selectedOptions, ...initialOptions, ...options].find(
-            (option) => option.value === internalValue
-          )
+        : [...selectedOptions, ...initialOptions, ...options].find((option) => option.value === internalValue)
       : null;
   }, [internalValue, isMulti, value, selectedOptions, initialOptions, options]);
 
@@ -191,10 +160,7 @@ const Combo = <T extends OptionData>(
       options
         .map((option) => ({
           ...option,
-          readable:
-            typeof option.label !== 'string'
-              ? option.readable ?? ''
-              : option.label.toString(),
+          readable: typeof option.label !== 'string' ? option.readable ?? '' : option.label.toString(),
         }))
         .filter(
           (option) =>
@@ -207,19 +173,12 @@ const Combo = <T extends OptionData>(
                   .toLowerCase()
                   .normalize('NFD')
                   .replace(/[\u0300-\u036f]/g, '')
-              ) &&
-            !initialOptions.find(
-              (initialOption) => initialOption.value === option.value
-            )
+              ) && !initialOptions.find((initialOption) => initialOption.value === option.value)
         )
     );
   };
 
-  const resetValue = (
-    e:
-      | React.MouseEvent<HTMLButtonElement, MouseEvent>
-      | React.KeyboardEvent<HTMLButtonElement>
-  ) => {
+  const resetValue = (e: React.MouseEvent<HTMLButtonElement, MouseEvent> | React.KeyboardEvent<HTMLButtonElement>) => {
     const newValue: string | string[] = isMulti ? [] : '';
     e.stopPropagation();
     setInternalValue(newValue);
@@ -329,13 +288,10 @@ const Combo = <T extends OptionData>(
 
   React.useEffect(() => {
     if (categoryKey) {
-      const initialOpenState = Object.keys(groupedOptions).reduce(
-        (acc, category) => {
-          acc[category] = true;
-          return acc;
-        },
-        {} as Record<string, boolean>
-      );
+      const initialOpenState = Object.keys(groupedOptions).reduce((acc, category) => {
+        acc[category] = true;
+        return acc;
+      }, {} as Record<string, boolean>);
       setOpenCategories(initialOpenState);
     }
   }, [categoryKey, groupedOptions]);
@@ -368,12 +324,7 @@ const Combo = <T extends OptionData>(
           setIsFocused(false);
         }}
       />
-      <PopoverTrigger
-        asChild
-        type="button"
-        disabled={disabled}
-        className="w-full relative group/combo"
-      >
+      <PopoverTrigger asChild type="button" disabled={disabled} className="w-full relative group/combo">
         <div
           className={cn(
             buttonVariants({ variant: 'outline' }),
@@ -420,15 +371,8 @@ const Combo = <T extends OptionData>(
       </PopoverTrigger>
       <PopoverContent className="w-[--radix-popover-trigger-width] max-h-[--radix-popover-content-available-height] p-0">
         <Command shouldFilter={false}>
-          <CommandInput
-            placeholder={searchPlaceholder}
-            onValueChange={handleFilter}
-            value={searchText}
-          />
-          <CommandEmpty>
-            {emptyMessage ||
-              (isLoading || isTyping ? `Carregando...` : 'Nada para mostrar')}
-          </CommandEmpty>
+          <CommandInput placeholder={searchPlaceholder} onValueChange={handleFilter} value={searchText} />
+          <CommandEmpty>{emptyMessage || (isLoading || isTyping ? `Carregando...` : 'Nada para mostrar')}</CommandEmpty>
           <CommandGroup className="max-h-[200px] flex flex-col w-full overflow-y-auto">
             <CommandList className="w-full h-full max-h-full">
               {selectAll && isMulti ? (
@@ -440,124 +384,89 @@ const Combo = <T extends OptionData>(
                   disabled={value?.length === options?.length}
                 >
                   <Check
-                    className={cn(
-                      'mr-2 h-4 w-4',
-                      value?.length === options?.length
-                        ? 'opacity-100'
-                        : 'opacity-0'
-                    )}
+                    className={cn('mr-2 h-4 w-4', value?.length === options?.length ? 'opacity-100' : 'opacity-0')}
                   />
                   Todos
                 </CommandItem>
               ) : null}
 
-              {Object.entries(groupedOptions).map(
-                ([category, categoryOptions]) => (
-                  <React.Fragment key={category}>
-                    {categoryKey && category !== 'undefined' ? (
-                      <Collapsible
-                        open={openCategories[category]}
-                        onOpenChange={undefined}
-                      >
-                        <CollapsibleTrigger asChild>
-                          <CommandItem
-                            value={`category-${category}`}
-                            className={cn(
-                              'font-semibold text-muted-foreground cursor-pointer',
-                              optionClassName
-                            )}
-                            onSelect={undefined}
-                          >
-                            <div
-                              className="flex items-center justify-between w-full"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                toggleCategory(category, e);
-                              }}
-                            >
-                              {categoryRender
-                                ? categoryRender(category)
-                                : category}
-                              {openCategories[category] ? (
-                                <ChevronUp className="h-4 w-4" />
-                              ) : (
-                                <ChevronDown className="h-4 w-4" />
-                              )}
-                            </div>
-                          </CommandItem>
-                        </CollapsibleTrigger>
-                        <CollapsibleContent>
-                          {categoryOptions.map((option) => (
-                            <CommandItem
-                              key={option.value}
-                              value={option.value}
-                              onSelect={(val) => handleSelect(val, option)}
-                              className={cn(optionClassName)}
-                              disabled={disabledOptions?.includes(option.value)}
-                              data-checked={
-                                isMulti
-                                  ? ((value as string[]) ?? []).includes(
-                                      option.value
-                                    )
-                                  : value === option.value
-                              }
-                            >
-                              <Check
-                                className={cn(
-                                  'mr-2 h-4 w-4',
-                                  (
-                                    isMulti
-                                      ? ((value as string[]) ?? []).includes(
-                                          option.value
-                                        )
-                                      : value === option.value
-                                  )
-                                    ? 'opacity-100'
-                                    : 'opacity-0'
-                                )}
-                              />
-                              {option.label}
-                            </CommandItem>
-                          ))}
-                        </CollapsibleContent>
-                      </Collapsible>
-                    ) : (
-                      categoryOptions.map((option) => (
+              {Object.entries(groupedOptions).map(([category, categoryOptions]) => (
+                <React.Fragment key={category}>
+                  {categoryKey && category !== 'undefined' ? (
+                    <Collapsible open={openCategories[category]} onOpenChange={undefined}>
+                      <CollapsibleTrigger asChild>
                         <CommandItem
-                          key={option.value}
-                          value={option.value}
-                          onSelect={(val) => handleSelect(val, option)}
-                          className={cn(optionClassName)}
-                          data-checked={
-                            isMulti
-                              ? ((value as string[]) ?? []).includes(
-                                  option.value
-                                )
-                              : value === option.value
-                          }
-                          disabled={disabledOptions?.includes(option.value)}
+                          value={`category-${category}`}
+                          className={cn('font-semibold text-muted-foreground cursor-pointer', optionClassName)}
+                          onSelect={undefined}
                         >
-                          <Check
-                            className={cn(
-                              'mr-2 h-4 w-4',
-                              (
-                                isMulti
-                                  ? ((value as string[]) ?? []).includes(
-                                      option.value
-                                    )
-                                  : value === option.value
-                              )
-                                ? 'opacity-100'
-                                : 'opacity-0'
+                          <div
+                            className="flex items-center justify-between w-full"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              toggleCategory(category, e);
+                            }}
+                          >
+                            {categoryRender ? categoryRender(category) : category}
+                            {openCategories[category] ? (
+                              <ChevronUp className="h-4 w-4" />
+                            ) : (
+                              <ChevronDown className="h-4 w-4" />
                             )}
-                          />
-                          {option.label}
+                          </div>
                         </CommandItem>
-                      ))
-                    )}
-                  </React.Fragment>
-                )
-              )}
+                      </CollapsibleTrigger>
+                      <CollapsibleContent>
+                        {categoryOptions.map((option) => (
+                          <CommandItem
+                            key={option.value}
+                            value={option.value}
+                            onSelect={(val) => handleSelect(val, option)}
+                            className={cn(optionClassName)}
+                            disabled={disabledOptions?.includes(option.value)}
+                            data-checked={
+                              isMulti ? ((value as string[]) ?? []).includes(option.value) : value === option.value
+                            }
+                          >
+                            <Check
+                              className={cn(
+                                'mr-2 h-4 w-4',
+                                (isMulti ? ((value as string[]) ?? []).includes(option.value) : value === option.value)
+                                  ? 'opacity-100'
+                                  : 'opacity-0'
+                              )}
+                            />
+                            {option.label}
+                          </CommandItem>
+                        ))}
+                      </CollapsibleContent>
+                    </Collapsible>
+                  ) : (
+                    categoryOptions.map((option) => (
+                      <CommandItem
+                        key={option.value}
+                        value={option.value}
+                        onSelect={(val) => handleSelect(val, option)}
+                        className={cn(optionClassName)}
+                        data-checked={
+                          isMulti ? ((value as string[]) ?? []).includes(option.value) : value === option.value
+                        }
+                        disabled={disabledOptions?.includes(option.value)}
+                      >
+                        <Check
+                          className={cn(
+                            'mr-2 h-4 w-4',
+                            (isMulti ? ((value as string[]) ?? []).includes(option.value) : value === option.value)
+                              ? 'opacity-100'
+                              : 'opacity-0'
+                          )}
+                        />
+                        {option.label}
+                      </CommandItem>
+                    ))
+                  )}
+                </React.Fragment>
+              ))}
             </CommandList>
             {showLoadMore && !isTyping ? <div ref={loadMoreRef} /> : null}
           </CommandGroup>

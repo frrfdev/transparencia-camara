@@ -1,10 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import {
-  GetPropositionsParams,
-  useGetPropositionsQuery,
-} from '../hooks/api/use-get-propositions.query';
+import { GetPropositionsParams, useGetPropositionsQuery } from '../hooks/api/use-get-propositions.query';
 import { usePagination } from '@/hooks/use-pagination';
 import { List } from '@/components/ui/list';
 import { PropositionDetails } from './proposition-details';
@@ -16,10 +13,9 @@ export const PropositionsList = () => {
   const { paginationConfig, dispatchPagination } = usePagination();
   const { addOption } = useMenuContext();
 
-  const [selectedPropositionId, setSelectedPropositionId] = useState<
-    number | null
-  >(null);
+  const [selectedPropositionId, setSelectedPropositionId] = useState<number | null>(null);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [filters, setFilters] = useState<unknown>({});
 
   const { data: propositions } = useGetPropositionsQuery({
     ...paginationConfig,
@@ -28,11 +24,10 @@ export const PropositionsList = () => {
       field: '',
       order: 'desc',
     },
+    filter: filters,
   } as GetPropositionsParams);
 
-  const selectedProposition = propositions?.data?.find(
-    (a) => a.id === selectedPropositionId
-  );
+  const selectedProposition = propositions?.data?.find((a) => a.id === selectedPropositionId);
 
   useEffect(() => {
     addOption({
@@ -67,11 +62,9 @@ export const PropositionsList = () => {
           </button>
         ))}
       </List>
-      {selectedPropositionId && selectedProposition && (
-        <PropositionDetails proposition={selectedProposition} />
-      )}
+      {selectedPropositionId && selectedProposition && <PropositionDetails proposition={selectedProposition} />}
 
-      <PropositionsFilter onFilter={() => {}} isOpen={isFilterOpen} />
+      <PropositionsFilter onFilter={(values) => setFilters(values)} isOpen={isFilterOpen} />
     </div>
   );
 };

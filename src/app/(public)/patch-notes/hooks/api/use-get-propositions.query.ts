@@ -1,7 +1,4 @@
-import {
-  PaginatedQueryParams,
-  usePaginatedQuery,
-} from '@/hooks/use-paginated-query';
+import { PaginatedQueryParams, usePaginatedQuery } from '@/hooks/use-paginated-query';
 import { Proposition } from '../../types/Proposition';
 
 export type GetPropositionsParams = PaginatedQueryParams & {
@@ -44,20 +41,15 @@ export type GetPropositionsParams = PaginatedQueryParams & {
   } | null;
 };
 
-export const useGetPropositionsQuery = ({
-  ...params
-}: GetPropositionsParams) => {
+export const useGetPropositionsQuery = ({ ...params }: GetPropositionsParams) => {
   return usePaginatedQuery<Proposition>({
-    queryKey: [
-      'proposicoes',
-      params.current,
-      params.pageSize,
-      params.sort,
-      params.search,
-    ],
+    queryKey: ['proposicoes', params.current, params.pageSize, params.sort, params.search, params.filter],
     url: `proposicoes`,
     params: {
       ...params,
+      filter: {
+        siglaTipo: params.filter?.typeAcronym?.join(','),
+      },
     },
   });
 };
