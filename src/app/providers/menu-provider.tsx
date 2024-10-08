@@ -53,10 +53,15 @@ export const MenuProvider = ({ children }: Props) => {
     if (optionWithKey) {
       optionWithKey.action();
     }
+    if (e.key === 'Escape') {
+      options[options.length - 1].action();
+    }
   };
 
   return (
-    <MenuContext.Provider value={{ options, addOption, removeOption, resetOptions }}>
+    <MenuContext.Provider
+      value={{ options, addOption, removeOption, resetOptions }}
+    >
       <div className="h-full w-full overflow-hidden" onKeyDown={handleKeyDown}>
         {children}
       </div>

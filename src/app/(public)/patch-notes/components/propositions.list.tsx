@@ -1,7 +1,10 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { GetPropositionsParams, useGetPropositionsQuery } from '../hooks/api/use-get-propositions.query';
+import {
+  GetPropositionsParams,
+  useGetPropositionsQuery,
+} from '../hooks/api/use-get-propositions.query';
 import { usePagination } from '@/hooks/use-pagination';
 import { List } from '@/components/ui/list';
 import { PropositionDetails } from './proposition-details';
@@ -13,7 +16,9 @@ export const PropositionsList = () => {
   const { paginationConfig, dispatchPagination } = usePagination();
   const { addOption } = useMenuContext();
 
-  const [selectedPropositionId, setSelectedPropositionId] = useState<number | null>(null);
+  const [selectedPropositionId, setSelectedPropositionId] = useState<
+    number | null
+  >(null);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [filters, setFilters] = useState<unknown>({});
 
@@ -27,7 +32,9 @@ export const PropositionsList = () => {
     filter: filters,
   } as GetPropositionsParams);
 
-  const selectedProposition = propositions?.data?.find((a) => a.id === selectedPropositionId);
+  const selectedProposition = propositions?.data?.find(
+    (a) => a.id === selectedPropositionId
+  );
 
   useEffect(() => {
     addOption({
@@ -46,7 +53,7 @@ export const PropositionsList = () => {
         {propositions?.data?.map((proposition) => (
           <button
             className={cn(
-              'font-medium flex gap-6 items-center rounded-full bg-white shadow-[rgba(17,_17,_26,_0.1)_0px_0px_16px] p-4 px-10  border-0 outline-0 hover:bg-orange-200',
+              'font-medium flex h-[80px] items-center rounded-full bg-white shadow-[rgba(17,_17,_26,_0.1)_0px_0px_16px]   border-0 outline-0 hover:bg-purple-200',
               'focus:bg-gradient-to-r from-neutral-950 to-neutral-900 focus:text-white focus:font-bold',
               proposition.id === selectedPropositionId &&
                 'bg-gradient-to-r from-neutral-950 to-neutral-900 text-white font-bold'
@@ -57,14 +64,33 @@ export const PropositionsList = () => {
               setSelectedPropositionId(proposition.id);
             }}
           >
-            <span className="font-bold">{proposition.numero}</span>
-            <span className="line-clamp-2">{proposition.ementa}</span>
+            <div className="flex h-full items-center pl-4 bg-purple-600 rounded-bl-full rounded-tl-full">
+              <span className="font-bold min-w-[60px] max-w-[60px] w-[60px] text-white text-center">
+                {proposition.numero}
+              </span>
+            </div>
+            <svg
+              className="inset-0 h-full min-w-[40px] w-[40px]"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 50 100"
+              preserveAspectRatio="none"
+            >
+              <polygon points="0,0 40,0 0,100" fill="#9333ea" />
+            </svg>
+            <div className="p-4 px-10">
+              <span className="line-clamp-2">{proposition.ementa}</span>
+            </div>
           </button>
         ))}
       </List>
-      {selectedPropositionId && selectedProposition && <PropositionDetails proposition={selectedProposition} />}
+      {selectedPropositionId && selectedProposition && (
+        <PropositionDetails proposition={selectedProposition} />
+      )}
 
-      <PropositionsFilter onFilter={(values) => setFilters(values)} isOpen={isFilterOpen} />
+      <PropositionsFilter
+        onFilter={(values) => setFilters(values)}
+        isOpen={isFilterOpen}
+      />
     </div>
   );
 };

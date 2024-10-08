@@ -2,7 +2,15 @@ import React, { useState, useEffect, useRef, LegacyRef } from 'react';
 import { motion } from 'framer-motion';
 import { ComboBox } from '@/components/ui/combo';
 import { cn } from '@/lib/utils';
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
 import { useForm } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
 import { z } from 'zod';
@@ -10,6 +18,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { createPortal } from 'react-dom';
 import { useGetPropositionTypesQuery } from '../hooks/api/use-get-proposition-types.query';
 import { DataConverter } from '@/lib/converter';
+import { markForFocusLater, returnFocus } from '@/lib/focusManager';
 
 const formSchema = z.object({
   typeAcronym: z.array(z.string()).nullable(),
@@ -69,6 +78,7 @@ export const PropositionsFilter = ({ onFilter, isOpen }: Props) => {
         if (a === 'closed') {
           setShouldHide(true);
           firstFieldRef.current?.blur();
+          returnFocus();
         }
         if (a === 'open') firstFieldRef.current?.focus();
       }}
@@ -92,9 +102,14 @@ export const PropositionsFilter = ({ onFilter, isOpen }: Props) => {
                     {...field}
                     value={field.value ?? []}
                     isLoading={isLoading}
-                    options={DataConverter.toSelectOptions(propositionTypes ?? [], 'sigla', 'nome')}
+                    options={DataConverter.toSelectOptions(
+                      propositionTypes ?? [],
+                      'sigla',
+                      'nome'
+                    )}
                     onFocus={(e) => {
                       console.log(e);
+                      if (e.relatedTarget) markForFocusLater(e.relatedTarget);
                       const audio = new Audio('/assets/audio/focus.wav');
                       audio.volume = 0.01;
                       audio.play();
@@ -105,7 +120,9 @@ export const PropositionsFilter = ({ onFilter, isOpen }: Props) => {
                     optionClassName="rounded-full data-[selected=true]:bg-black data-[checked=true]:bg-orange-500 data-[selected=true]:text-white"
                   />
                 </FormControl>
-                <FormDescription>This is your public display name.</FormDescription>
+                <FormDescription>
+                  This is your public display name.
+                </FormDescription>
                 <FormMessage />
               </FormItem>
             )}
