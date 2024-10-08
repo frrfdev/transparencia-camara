@@ -3,7 +3,7 @@ import { PropositionsList } from './components/propositions.list';
 import { ScrollText } from 'lucide-react';
 import { DiagonalBackground } from '@/components/ui/diagonal-background';
 
-export const PatchNotes = () => {
+const PatchNotes = () => {
   return (
     <div className="h-full w-full overflow-hidden">
       <DiagonalBackground>
