@@ -1,7 +1,7 @@
 import React from 'react';
 import { ProjectSearch } from './components/project-search';
 
-export const VotesPage = () => {
+const VotesPage = () => {
   return <ProjectSearch />;
 };
 
