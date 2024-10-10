@@ -78,6 +78,7 @@ export const PropositionsFilter = ({ onFilter, isOpen }: Props) => {
       setShouldHide(true);
       firstFieldRef.current?.blur();
       returnFocus();
+      setIsPreviousFocusSetted(false);
     }
     if (animation === 'open') firstFieldRef.current?.focus();
   };
