@@ -32,7 +32,7 @@ type Props = {
 };
 
 export const PropositionsFilter = ({ onFilter, isOpen }: Props) => {
-  const firstFieldRef = useRef<HTMLDivElement>(null);
+  const firstFieldRef = useRef<HTMLDivElement | null>(null);
   const [shouldHide, setShouldHide] = useState(true);
   const [portalElement, setPortalElement] = useState<HTMLElement | null>(null);
   const [isPreviousFocusSetted, setIsPreviousFocusSetted] = useState(false);
@@ -132,11 +132,15 @@ export const PropositionsFilter = ({ onFilter, isOpen }: Props) => {
                   <InputSound>
                     <ComboBox
                       {...field}
+                      mode="multi"
                       value={field.value ?? []}
                       isLoading={isLoading}
                       options={typeOptions}
                       onFocus={handleFocusTypeAcronym}
-                      ref={firstFieldRef as LegacyRef<HTMLInputElement>}
+                      ref={(element: HTMLInputElement | null) => {
+                        firstFieldRef.current = element;
+                        field.ref(element);
+                      }}
                       placeholder="Tipo"
                       className="rounded-full  data-[focused=true]:bg-black data-[focused=true]:text-white h-14 data-[focused=true]:placeholder:text-white data-[focused=true]:border-0"
                       optionClassName="rounded-full whitespace-nowrap flex overflow-hidden overflow-ellipsis  data-[selected=true]:bg-black data-[checked=true]:bg-orange-500 data-[selected=true]:text-white"
@@ -159,6 +163,7 @@ export const PropositionsFilter = ({ onFilter, isOpen }: Props) => {
                       value={field.value ?? []}
                       options={yearOptions}
                       placeholder="Ano"
+                      mode="multi"
                       className="rounded-full  data-[focused=true]:bg-black data-[focused=true]:text-white h-14 data-[focused=true]:placeholder:text-white data-[focused=true]:border-0"
                       optionClassName="rounded-full whitespace-nowrap flex overflow-hidden overflow-ellipsis  data-[selected=true]:bg-black data-[checked=true]:bg-orange-500 data-[selected=true]:text-white"
                     />

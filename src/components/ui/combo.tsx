@@ -1,3 +1,5 @@
+'use client';
+
 import * as React from 'react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 
@@ -106,6 +108,7 @@ const Combo = <T extends OptionData>(
   }: ComboBoxProps<T>,
   ref: React.Ref<HTMLInputElement> | null
 ) => {
+  const inputRef = React.useRef<HTMLInputElement | null>(null);
   const [parentNode, setParentNode] = React.useState<HTMLDivElement | null>(
     null
   );
@@ -304,11 +307,20 @@ const Combo = <T extends OptionData>(
     if (entry?.isIntersecting) onLoadMore?.();
   }, [entry?.isIntersecting]);
 
-  rowVirtualizer.getVirtualItems();
+  React.useEffect(() => {
+    if (!open) {
+      if (inputRef && 'current' in inputRef) {
+        setTimeout(() => {
+          inputRef.current?.focus();
+        }, 10);
+      }
+    }
+  }, [open]);
 
   return (
     <Popover
       open={open}
+      modal
       onOpenChange={(isOpen) => {
         setOpen(isOpen);
       }}
@@ -319,7 +331,12 @@ const Combo = <T extends OptionData>(
         onChange={() => null}
         className="w-0 h-0 absolute"
         tabIndex={0}
-        ref={ref}
+        ref={(element) => {
+          inputRef.current = element;
+          if (typeof ref === 'function') {
+            ref(element);
+          }
+        }}
         onFocus={handleFocus}
         onKeyDown={handleKeyDown}
         onBlur={handleBlur}
@@ -373,6 +390,13 @@ const Combo = <T extends OptionData>(
             placeholder={searchPlaceholder}
             onValueChange={handleFilter}
             value={searchText}
+            onKeyDown={(e) => {
+              if (e.key === 'Escape') {
+                e.stopPropagation();
+                e.preventDefault();
+                setOpen(false);
+              }
+            }}
           />
           <CommandEmpty>
             {emptyMessage ||
