@@ -79,7 +79,7 @@ export const PropositionDetails = ({
           <div className="bg-gray-300 font-bold text-black w-full p-2 text-center">
             Autores
           </div>
-          <div className="mt-4 w-full">
+          <div className="mt-4 w-full max-h-[200px] overflow-x-auto flex gap-4 p-4">
             {propositionAuthorsWithId?.map((author) => (
               <PersonCard key={author.id} tabIndex={3} personId={author.id} />
             ))}

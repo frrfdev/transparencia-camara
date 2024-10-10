@@ -7,6 +7,7 @@ export type PersonDetailsApi = {
   municipioNascimento: string;
   nomeCivil: string;
   redeSocial: string[];
+  /** M ou F */
   sexo: string;
   ufNascimento: string;
   ultimoStatus: {

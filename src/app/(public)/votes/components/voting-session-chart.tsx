@@ -83,7 +83,6 @@ export const VotingSessionChart = ({ votes, className }: Props) => {
             stroke="none"
             fontSize={12}
             formatter={(value: keyof typeof chartConfig) => {
-              console.log(value);
               return chartConfig[parseVoteType(value)]?.label;
             }}
           />

@@ -3,21 +3,9 @@ import { useVirtualizer } from '@tanstack/react-virtual';
 
 import type * as Select from '@radix-ui/react-select';
 import { useDebounce, useIntersectionObserver } from '@uidotdev/usehooks';
-import {
-  Check,
-  ChevronsUpDown,
-  LoaderCircle,
-  X,
-  ChevronDown,
-  ChevronUp,
-} from 'lucide-react';
+import { Check, ChevronsUpDown, LoaderCircle, X } from 'lucide-react';
 
 import { buttonVariants } from './button';
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from './collapsible';
 import {
   Command,
   CommandEmpty,
@@ -91,12 +79,6 @@ export type ComboBoxProps<T> = Omit<
   onFocus?: (event: React.FocusEvent<HTMLInputElement>) => void;
 };
 
-const getNestedProperty = (obj: unknown, path: string) => {
-  return path
-    .split('.')
-    .reduce((acc, part) => acc && acc[part as keyof typeof acc], obj);
-};
-
 const Combo = <T extends OptionData>(
   {
     options = [] as T[],
@@ -120,12 +102,18 @@ const Combo = <T extends OptionData>(
     mode = 'single',
     selectAll,
     optionClassName,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     ..._
   }: ComboBoxProps<T>,
   ref: React.Ref<HTMLInputElement> | null
 ) => {
-  const parentRef = React.useRef<HTMLDivElement>(null);
+  const [parentNode, setParentNode] = React.useState<HTMLDivElement | null>(
+    null
+  );
+  const refCallback = React.useCallback((node: HTMLDivElement) => {
+    if (node) {
+      setParentNode(node);
+    }
+  }, []);
 
   const [loadMoreRef, entry] = useIntersectionObserver({
     threshold: 0,
@@ -212,8 +200,9 @@ const Combo = <T extends OptionData>(
 
   const rowVirtualizer = useVirtualizer({
     count: filteredOptions.length + (selectAll ? 1 : 0),
-    getScrollElement: () => parentRef.current,
+    getScrollElement: () => parentNode,
     estimateSize: () => 32,
+    enabled: open,
   });
 
   const title =
@@ -315,14 +304,13 @@ const Combo = <T extends OptionData>(
     if (entry?.isIntersecting) onLoadMore?.();
   }, [entry?.isIntersecting]);
 
+  rowVirtualizer.getVirtualItems();
+
   return (
     <Popover
       open={open}
       onOpenChange={(isOpen) => {
         setOpen(isOpen);
-        if (ref && 'current' in ref && isOpen) {
-          ref.current?.focus();
-        }
       }}
     >
       <input
@@ -392,10 +380,10 @@ const Combo = <T extends OptionData>(
           </CommandEmpty>
           <CommandGroup
             className="max-h-[200px] flex flex-col w-full overflow-y-auto"
-            ref={parentRef}
+            ref={refCallback}
           >
             <CommandList
-              className="w-full max-h-full"
+              className="w-full max-h-full relative overflow-y-hidden"
               style={{
                 height: `${rowVirtualizer.getTotalSize()}px`,
               }}
@@ -423,9 +411,19 @@ const Combo = <T extends OptionData>(
                 const option = filteredOptions[virtualOptions.index];
                 return (
                   <CommandItem
-                    key={option.value}
-                    value={option.value}
+                    //key={option.value}
+                    //value={option.value}
+                    style={{
+                      position: 'absolute',
+                      top: 0,
+                      left: 0,
+                      width: '100%',
+                      height: `${virtualOptions.size}px`,
+                      transform: `translateY(${virtualOptions.start}px)`,
+                    }}
                     onSelect={(val) => handleSelect(val, option)}
+                    key={filteredOptions[virtualOptions.index].value}
+                    value={filteredOptions[virtualOptions.index].value}
                     className={cn(optionClassName)}
                     disabled={disabledOptions?.includes(option.value)}
                     data-checked={
@@ -436,7 +434,7 @@ const Combo = <T extends OptionData>(
                   >
                     <Check
                       className={cn(
-                        'mr-2 h-4 w-4',
+                        'mr-2 h-4 w-4 min-w-4',
                         (
                           isMulti
                             ? ((value as string[]) ?? []).includes(option.value)
@@ -446,7 +444,12 @@ const Combo = <T extends OptionData>(
                           : 'opacity-0'
                       )}
                     />
-                    {option.label}
+                    <span
+                      className="whitespace-nowrap w-full overflow-hidden overflow-ellipsis"
+                      title={option.readable}
+                    >
+                      {option.label}
+                    </span>
                   </CommandItem>
                 );
               })}

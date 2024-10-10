@@ -1,14 +1,12 @@
-import React, { useState, useEffect, useRef, LegacyRef } from 'react';
+import React, { useState, useEffect, useRef, LegacyRef, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { ComboBox } from '@/components/ui/combo';
 import { cn } from '@/lib/utils';
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from '@/components/ui/form';
 import { useForm } from 'react-hook-form';
@@ -19,9 +17,13 @@ import { createPortal } from 'react-dom';
 import { useGetPropositionTypesQuery } from '../hooks/api/use-get-proposition-types.query';
 import { DataConverter } from '@/lib/converter';
 import { markForFocusLater, returnFocus } from '@/lib/focusManager';
+import { InputSound } from '@/components/ui/inut-sound';
+import { ScrollIntoView } from '@/components/animated/scroll-into-view';
+import { useSearchParams } from 'next/navigation';
 
 const formSchema = z.object({
   typeAcronym: z.array(z.string()).nullable(),
+  year: z.array(z.string()).nullable(),
 });
 
 type Props = {
@@ -33,13 +35,37 @@ export const PropositionsFilter = ({ onFilter, isOpen }: Props) => {
   const firstFieldRef = useRef<HTMLDivElement>(null);
   const [shouldHide, setShouldHide] = useState(true);
   const [portalElement, setPortalElement] = useState<HTMLElement | null>(null);
+  const [isPreviousFocusSetted, setIsPreviousFocusSetted] = useState(false);
+
+  const searchParams = useSearchParams();
+  const typeAcronym = searchParams?.get('typeAcronym');
+  const year = searchParams?.get('year');
 
   const { data: propositionTypes, isLoading } = useGetPropositionTypesQuery();
+
+  const typeOptions = DataConverter.toSelectOptions(
+    propositionTypes ?? [],
+    'cod',
+    'nome'
+  );
+
+  const yearOptions = DataConverter.toSelectOptions(
+    Array.from(
+      { length: new Date().getFullYear() - 1999 },
+      (_, i) => i + 2000
+    ).map((year) => ({
+      value: year.toString(),
+      label: year.toString(),
+    })),
+    'value',
+    'label'
+  );
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       typeAcronym: [],
+      year: [],
     },
   });
 
@@ -47,14 +73,36 @@ export const PropositionsFilter = ({ onFilter, isOpen }: Props) => {
     onFilter(values);
   }
 
-  const variants = {
-    open: { right: '0' },
-    closed: { right: '-40%' },
+  const handleAnimationComplete = (animation: string) => {
+    if (animation === 'closed') {
+      setShouldHide(true);
+      firstFieldRef.current?.blur();
+      returnFocus();
+    }
+    if (animation === 'open') firstFieldRef.current?.focus();
+  };
+
+  const handleAnimationStart = () => {
+    const audio = new Audio('/assets/audio/slide.mp3');
+    audio.volume = 0.01;
+    audio.play();
+  };
+
+  const handleFocusTypeAcronym = (e: React.FocusEvent<HTMLInputElement>) => {
+    if (e.relatedTarget && !isPreviousFocusSetted) {
+      markForFocusLater(e.relatedTarget);
+      setIsPreviousFocusSetted(true);
+    }
   };
 
   useEffect(() => {
     if (isOpen) setShouldHide(false);
   }, [isOpen]);
+
+  useEffect(() => {
+    form.setValue('typeAcronym', typeAcronym?.split(',') ?? []);
+    form.setValue('year', year?.split(',') ?? []);
+  }, [typeAcronym, year]);
 
   useEffect(() => {
     const element = document.getElementById('portals');
@@ -66,27 +114,11 @@ export const PropositionsFilter = ({ onFilter, isOpen }: Props) => {
   }, []);
 
   const content = (
-    <motion.div
-      className={cn(
-        shouldHide
-          ? 'overflow-hidden h-0 w-0'
-          : 'absolute h-full p-4 top-0 overflow-hidden z-50 -right-[40%] w-[40%] bg-red-600 border-l-[40px] drop-shadow-[rgba(17,_17,_26,_0.1)_-10px_0px_16px] border-red-700'
-      )}
-      animate={isOpen ? 'open' : 'closed'}
-      variants={variants}
-      onAnimationComplete={(a) => {
-        if (a === 'closed') {
-          setShouldHide(true);
-          firstFieldRef.current?.blur();
-          returnFocus();
-        }
-        if (a === 'open') firstFieldRef.current?.focus();
-      }}
-      onAnimationStart={() => {
-        const audio = new Audio('/assets/audio/slide.mp3');
-        audio.volume = 0.01;
-        audio.play();
-      }}
+    <ScrollIntoView
+      onAnimationComplete={handleAnimationComplete}
+      onAnimationStart={handleAnimationStart}
+      shouldHide={shouldHide}
+      isOpen={isOpen}
     >
       <h1 className="text-4xl font-bold text-white">Filtro</h1>
       <Form {...form}>
@@ -96,41 +128,55 @@ export const PropositionsFilter = ({ onFilter, isOpen }: Props) => {
             name="typeAcronym"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Username</FormLabel>
                 <FormControl>
-                  <ComboBox
-                    {...field}
-                    value={field.value ?? []}
-                    isLoading={isLoading}
-                    options={DataConverter.toSelectOptions(
-                      propositionTypes ?? [],
-                      'sigla',
-                      'nome'
-                    )}
-                    onFocus={(e) => {
-                      console.log(e);
-                      if (e.relatedTarget) markForFocusLater(e.relatedTarget);
-                      const audio = new Audio('/assets/audio/focus.wav');
-                      audio.volume = 0.01;
-                      audio.play();
-                    }}
-                    ref={firstFieldRef as LegacyRef<HTMLInputElement>}
-                    placeholder="Tipo"
-                    className="rounded-full data-[focused=true]:bg-black data-[focused=true]:text-white h-14 data-[focused=true]:placeholder:text-white data-[focused=true]:border-0"
-                    optionClassName="rounded-full data-[selected=true]:bg-black data-[checked=true]:bg-orange-500 data-[selected=true]:text-white"
-                  />
+                  <InputSound>
+                    <ComboBox
+                      {...field}
+                      value={field.value ?? []}
+                      isLoading={isLoading}
+                      options={typeOptions}
+                      onFocus={handleFocusTypeAcronym}
+                      ref={firstFieldRef as LegacyRef<HTMLInputElement>}
+                      placeholder="Tipo"
+                      className="rounded-full  data-[focused=true]:bg-black data-[focused=true]:text-white h-14 data-[focused=true]:placeholder:text-white data-[focused=true]:border-0"
+                      optionClassName="rounded-full whitespace-nowrap flex overflow-hidden overflow-ellipsis  data-[selected=true]:bg-black data-[checked=true]:bg-orange-500 data-[selected=true]:text-white"
+                    />
+                  </InputSound>
                 </FormControl>
-                <FormDescription>
-                  This is your public display name.
-                </FormDescription>
                 <FormMessage />
               </FormItem>
             )}
           />
-          <Button type="submit">Submit</Button>
+          <FormField
+            control={form.control}
+            name="year"
+            render={({ field }) => (
+              <FormItem>
+                <FormControl>
+                  <InputSound>
+                    <ComboBox
+                      {...field}
+                      value={field.value ?? []}
+                      options={yearOptions}
+                      placeholder="Ano"
+                      className="rounded-full  data-[focused=true]:bg-black data-[focused=true]:text-white h-14 data-[focused=true]:placeholder:text-white data-[focused=true]:border-0"
+                      optionClassName="rounded-full whitespace-nowrap flex overflow-hidden overflow-ellipsis  data-[selected=true]:bg-black data-[checked=true]:bg-orange-500 data-[selected=true]:text-white"
+                    />
+                  </InputSound>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <Button
+            type="submit"
+            className="w-full rounded-full py-6 focus:bg-white focus:text-red-500 focus:border-0 focus:outline-none focus:ring-0"
+          >
+            Filtrar
+          </Button>
         </form>
       </Form>
-    </motion.div>
+    </ScrollIntoView>
   );
 
   return portalElement ? createPortal(content, portalElement) : null;

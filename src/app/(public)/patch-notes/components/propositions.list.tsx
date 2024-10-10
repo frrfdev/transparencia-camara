@@ -6,21 +6,26 @@ import {
   useGetPropositionsQuery,
 } from '../hooks/api/use-get-propositions.query';
 import { usePagination } from '@/hooks/use-pagination';
-import { List } from '@/components/ui/list';
+import { InputSoundList } from '@/components/ui/inut-sound-list';
 import { PropositionDetails } from './proposition-details';
 import { useMenuContext } from '@/app/providers/menu-provider';
 import { PropositionsFilter } from './propositions-filter';
 import { cn } from '@/lib/utils';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { UrlUtils } from '../../votes/utils/url';
 
 export const PropositionsList = () => {
   const { paginationConfig, dispatchPagination } = usePagination();
-  const { addOption } = useMenuContext();
+  const { addOption, removeOption } = useMenuContext();
+  const router = useRouter();
 
   const [selectedPropositionId, setSelectedPropositionId] = useState<
     number | null
   >(null);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
-  const [filters, setFilters] = useState<unknown>({});
+  const searchParams = useSearchParams();
+  const typeAcronym = searchParams?.get('typeAcronym');
+  const year = searchParams?.get('year');
 
   const { data: propositions } = useGetPropositionsQuery({
     ...paginationConfig,
@@ -29,7 +34,10 @@ export const PropositionsList = () => {
       field: '',
       order: 'desc',
     },
-    filter: filters,
+    filter: {
+      typeAcronym,
+      year,
+    },
   } as GetPropositionsParams);
 
   const selectedProposition = propositions?.data?.find(
@@ -45,15 +53,19 @@ export const PropositionsList = () => {
         setIsFilterOpen((old) => !old);
       },
     });
+
+    return () => {
+      removeOption('y');
+    };
   }, []);
 
   return (
     <div className="h-full w-full flex gap-2 pb-4 relative overflow-hidden">
-      <List className="flex flex-col p-10 pt-4 gap-4 h-full w-1/2 overflow-y-auto">
+      <InputSoundList className="flex flex-col p-10 pt-4 gap-4 h-full w-1/2 overflow-y-auto">
         {propositions?.data?.map((proposition) => (
           <button
             className={cn(
-              'font-medium flex h-[80px] items-center rounded-full bg-white shadow-[rgba(17,_17,_26,_0.1)_0px_0px_16px]   border-0 outline-0 hover:bg-purple-200',
+              'font-medium flex h-[80px] items-center rounded-full bg-white shadow-[rgba(17,_17,_26,_0.1)_0px_0px_16px] hover:bg-purple-200',
               'focus:bg-gradient-to-r from-neutral-950 to-neutral-900 focus:text-white focus:font-bold',
               proposition.id === selectedPropositionId &&
                 'bg-gradient-to-r from-neutral-950 to-neutral-900 text-white font-bold'
@@ -82,13 +94,15 @@ export const PropositionsList = () => {
             </div>
           </button>
         ))}
-      </List>
+      </InputSoundList>
       {selectedPropositionId && selectedProposition && (
         <PropositionDetails proposition={selectedProposition} />
       )}
 
       <PropositionsFilter
-        onFilter={(values) => setFilters(values)}
+        onFilter={(values) => {
+          router.push(`/patch-notes?${UrlUtils.buildQueryString(values)}`);
+        }}
         isOpen={isFilterOpen}
       />
     </div>

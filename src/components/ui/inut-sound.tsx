@@ -1,12 +1,10 @@
 import React from 'react';
 
-type Props = React.HTMLAttributes<HTMLDivElement>;
+type Props = {
+  children: React.ReactNode;
+};
 
-export const List = ({ children, ...props }: Props) => {
-  // const currentFocusedChildren = React.Children.toArray(children).filter(
-  //   (child) => React.isValidElement(child) && child.props.isFocused
-  // );
-
+export const InputSound = ({ children }: Props) => {
   const newChildren = React.Children.map(children, (child) => {
     return React.cloneElement(
       child as React.ReactElement,
@@ -21,5 +19,5 @@ export const List = ({ children, ...props }: Props) => {
     );
   });
 
-  return <div {...props}>{newChildren}</div>;
+  return newChildren;
 };

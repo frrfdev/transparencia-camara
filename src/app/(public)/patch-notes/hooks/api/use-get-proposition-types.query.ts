@@ -10,7 +10,14 @@ export const useGetPropositionTypesQuery = () => {
     queryKey: ['propositionTypes'],
     staleTime: 1000 * 60 * 60 * 24,
     queryFn: async () => {
-      const response = await api.get<ApiResponse<PropositionTypeApi[]>>('/referencias/tiposProposicao');
+      const response = await api.get<ApiResponse<PropositionTypeApi[]>>(
+        '/referencias/tiposProposicao',
+        {
+          headers: {
+            Accept: 'application/json',
+          },
+        }
+      );
       return response.data.dados;
     },
   });
