@@ -18,7 +18,7 @@ import { useGetPropositionTypesQuery } from '../hooks/api/use-get-proposition-ty
 import { DataConverter } from '@/lib/converter';
 import { markForFocusLater, returnFocus } from '@/lib/focusManager';
 import { InputSound } from '@/components/ui/inut-sound';
-import { ScrollIntoView } from '@/components/animated/scroll-into-view';
+import { SlideIntoView } from '@/components/animated/slide-into-view';
 import { useSearchParams } from 'next/navigation';
 
 const formSchema = z.object({
@@ -115,7 +115,7 @@ export const PropositionsFilter = ({ onFilter, isOpen }: Props) => {
   }, []);
 
   const content = (
-    <ScrollIntoView
+    <SlideIntoView
       onAnimationComplete={handleAnimationComplete}
       onAnimationStart={handleAnimationStart}
       shouldHide={shouldHide}
@@ -182,7 +182,7 @@ export const PropositionsFilter = ({ onFilter, isOpen }: Props) => {
           </Button>
         </form>
       </Form>
-    </ScrollIntoView>
+    </SlideIntoView>
   );
 
   return portalElement ? createPortal(content, portalElement) : null;

@@ -13,7 +13,7 @@ const variants = {
   closed: { right: '-40%' },
 };
 
-export const ScrollIntoView = ({
+export const SlideIntoView = ({
   children,
   className,
   shouldHide,

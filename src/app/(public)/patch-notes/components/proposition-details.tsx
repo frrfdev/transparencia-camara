@@ -45,7 +45,8 @@ export const PropositionDetails = ({
                 TIPO
               </td>
               <td className="bg-white text-black p-2 w-1/2">
-                {propositionDetails?.siglaTipo}
+                {propositionDetails?.siglaTipo} -{' '}
+                {propositionDetails?.descricaoTipo}
               </td>
             </tr>
             <tr className="border-b-2 border-gray-400/50">
@@ -79,7 +80,7 @@ export const PropositionDetails = ({
           <div className="bg-gray-300 font-bold text-black w-full p-2 text-center">
             Autores
           </div>
-          <div className="mt-4 w-full max-h-[200px] overflow-x-auto flex gap-4 p-4">
+          <div className="max-h-[150px] flex-col  overflow-y-auto flex bg-white w-full">
             {propositionAuthorsWithId?.map((author) => (
               <PersonCard key={author.id} tabIndex={3} personId={author.id} />
             ))}

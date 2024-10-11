@@ -89,8 +89,12 @@ export const PropositionsList = () => {
             >
               <polygon points="0,0 40,0 0,100" fill="#9333ea" />
             </svg>
-            <div className="p-4 px-10">
-              <span className="line-clamp-2">{proposition.ementa}</span>
+            <div className="p-4 px-10 w-full">
+              <span className="line-clamp-2 text-start w-full">
+                {proposition.ementa !== ''
+                  ? proposition.ementa
+                  : 'Ementa não informada'}
+              </span>
             </div>
           </button>
         ))}

@@ -22,8 +22,11 @@ export const Footer = (props: React.HTMLAttributes<HTMLDivElement>) => {
           <button
             key={option.key}
             className="flex gap-2 items-center focus:outline-none hover:text-orange-500 focus:text-orange-500 group"
+            onClick={() => option.action()}
           >
-            <div className="bg-white rounded-full w-6 h-6 max-w-6 flex items-center justify-center">{option.icon}</div>
+            <div className="bg-white rounded-full w-6 h-6 max-w-6 flex items-center justify-center">
+              {option.icon}
+            </div>
             <span className="text-white group-hover:text-orange-500 group-focus:text-orange-500 text-md uppercase font-bold">
               {option.label}
             </span>
