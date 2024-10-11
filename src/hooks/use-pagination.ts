@@ -9,9 +9,8 @@ export interface PaginationState {
   current: number;
   total: number;
   lastPage: number;
-  search?: string;
   sort?: Sort;
-  filter?: unknown;
+  filter?: Record<string, unknown>;
   firstPageIndex?: number;
 }
 
@@ -50,11 +49,6 @@ interface PaginationPreviousPageAction {
   type: 'PREVIOUS_PAGE';
 }
 
-interface PaginationSetSearchAction {
-  type: 'SET_SEARCH';
-  payload: string;
-}
-
 interface PaginationSetSortAction {
   type: 'SET_SORT';
   payload: Sort;
@@ -62,7 +56,7 @@ interface PaginationSetSortAction {
 
 interface PaginationSetFilterAction {
   type: 'SET_FILTER';
-  payload: unknown;
+  payload: Record<string, unknown>;
 }
 
 export type PaginationAction =
@@ -74,13 +68,12 @@ export type PaginationAction =
   | PaginationNextPageAction
   | PaginationSetLastPageAction
   | PaginationSetSortAction
-  | PaginationSetFilterAction
-  | PaginationSetSearchAction;
+  | PaginationSetFilterAction;
 
 const paginationReducer = (
   state: PaginationState,
   action: PaginationAction
-) => {
+): PaginationState => {
   switch (action.type) {
     case 'OVERRIDE_PAGINATION':
       return {
@@ -117,12 +110,6 @@ const paginationReducer = (
         ...state,
         lastPage: action.payload,
       };
-    case 'SET_SEARCH':
-      return {
-        ...state,
-        search: action.payload,
-        current: state.firstPageIndex || 1,
-      };
     case 'SET_SORT':
       return {
         ...state,
@@ -156,36 +143,40 @@ const INITIAL_PAGINATION = {
   total: 1,
   pageSize: 10,
   lastPage: 1,
-  search: '',
   sort: {} as Sort,
-  filter: {},
+  filter: {} as Record<string, unknown>,
   firstPageIndex: 1,
 };
 
 export const usePagination = (props?: Props) => {
   const [paginationConfig, dispatchPagination] = useReducer(
     paginationReducer,
-    props?.initialPagination
+    (props?.initialPagination
       ? {
-          ...props?.initialPagination,
-          lastPage: props?.initialPagination?.lastPage || 1,
-          total: props?.initialPagination?.total || 1,
-          pageSize: props?.initialPagination?.pageSize || 10,
-          current: props?.initialPagination?.current || 1,
-          firstPageIndex: !Number.isNaN(
-            props?.initialPagination?.firstPageIndex
-          )
-            ? props?.initialPagination?.firstPageIndex
-            : 1,
+          ...INITIAL_PAGINATION,
+          ...props.initialPagination,
+          lastPage:
+            props.initialPagination.lastPage ?? INITIAL_PAGINATION.lastPage,
+          total: props.initialPagination.total ?? INITIAL_PAGINATION.total,
+          pageSize:
+            props.initialPagination.pageSize ?? INITIAL_PAGINATION.pageSize,
+          current:
+            props.initialPagination.current ?? INITIAL_PAGINATION.current,
+          firstPageIndex:
+            props.initialPagination.firstPageIndex ??
+            INITIAL_PAGINATION.firstPageIndex,
+          sort: props.initialPagination.sort ?? INITIAL_PAGINATION.sort,
+          filter: (props.initialPagination.filter ??
+            INITIAL_PAGINATION.filter) as Record<string, unknown>,
         }
-      : INITIAL_PAGINATION
+      : INITIAL_PAGINATION) as PaginationState
   );
 
   return {
     paginationConfig: {
       ...paginationConfig,
-      lastPage: paginationConfig.lastPage || 1,
-      pageSize: paginationConfig.pageSize || 10,
+      lastPage: paginationConfig.lastPage ?? 1,
+      pageSize: paginationConfig.pageSize ?? 10,
     },
     dispatchPagination,
   };

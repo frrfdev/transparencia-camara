@@ -7,7 +7,6 @@ export const api = axios.create({
 });
 
 const extractPageFromLink = (link: string) => {
-  console.log('link', link);
   const page = link.split('pagina=')[1].split('&')[0];
   return parseInt(page);
 };
@@ -25,7 +24,7 @@ export const ApiResponseConverter = {
       data: response.dados,
       page: extractPageFromLink(response.links[0].href),
       pageSize: extractPageSizeFromLink(response.links[0].href),
-      lastPage: extractPageFromLink(response.links[2].href),
+      lastPage: extractPageFromLink(response.links[3].href),
       total: 0,
       search: '',
     };

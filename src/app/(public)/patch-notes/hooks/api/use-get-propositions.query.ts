@@ -1,10 +1,12 @@
-import {
-  PaginatedQueryParams,
-  usePaginatedQuery,
-} from '@/hooks/use-paginated-query';
+import { PaginatedQueryParams } from '@/hooks/use-paginated-query';
 import { Proposition } from '../../types/Proposition';
+import {
+  ListInfiniteQueryParams,
+  useListInfiniteQuery,
+} from '@/hooks/use-list-infinite-query';
+import { DispatchPagination } from '@/hooks/use-pagination';
 
-export type GetPropositionsParams = PaginatedQueryParams & {
+export type GetPropositionsParams = ListInfiniteQueryParams & {
   filter?: {
     id?: string;
     year?: string;
@@ -42,28 +44,30 @@ export type GetPropositionsParams = PaginatedQueryParams & {
     /** Código(s) numérico(s), separados por vírgulas, das áreas temáticas das proposições que serão listadas. Os temas possíveis podem ser obtidos em /referencias/proposicoes/codTema */
     codTheme?: string;
   } | null;
+  dispatchPagination: DispatchPagination;
 };
 
 export const useGetPropositionsQuery = ({
+  dispatchPagination,
   ...params
 }: GetPropositionsParams) => {
-  return usePaginatedQuery<Proposition>({
-    queryKey: [
-      'proposicoes',
-      params.current,
-      params.pageSize,
-      params.sort,
-      params.search,
-      JSON.stringify(params.filter),
-    ],
-    url: `proposicoes`,
-    staleTime: 2000,
-    params: {
-      ...params,
+  return useListInfiniteQuery<Proposition>(
+    'proposicoes',
+    {
+      queryKey: [
+        'proposicoes',
+        params.pageSize,
+        params.sort,
+        JSON.stringify(params.filter),
+      ],
+      staleTime: 2000,
+      dispatchPagination,
+    },
+    {
       filter: {
         siglaTipo: params.filter?.typeAcronym,
         ano: params.filter?.year,
       },
-    },
-  });
+    }
+  );
 };
