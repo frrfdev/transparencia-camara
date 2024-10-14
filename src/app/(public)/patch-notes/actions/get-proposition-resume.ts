@@ -1,6 +1,7 @@
 'use server';
 
 import { MongoClient } from 'mongodb';
+import { PropositionResumeData } from '../types/PropositionResumeData';
 
 export async function getPropositionResume(propositionId: string) {
   const uri = process.env.MONGODB_URI;
@@ -26,7 +27,9 @@ export async function getPropositionResume(propositionId: string) {
       id: resume._id.toString(),
       propositionNumber: resume.proposition_number,
       resume: resume.resume, // Add this line to include the resume field
-    };
+      created_at: resume.created_at,
+      url: resume.url,
+    } as PropositionResumeData;
   } catch (error) {
     console.error('Error fetching proposition resume:', error);
     throw error;
