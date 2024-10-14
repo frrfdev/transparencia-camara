@@ -2,20 +2,37 @@ import { useGetPropositionAuthorsQuery } from '../hooks/api/use-get-proposition-
 import { useGetPropositionDetailsQuery } from '../hooks/api/use-get-proposition-details.query';
 import { Proposition } from '../types/Proposition';
 import { PersonCard } from './person-card';
+import { useGetPropositionResume } from '../hooks/api/use-get-proposition-resume';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useEffect, useState } from 'react';
+import { PropositionDetailsSkeleton } from './proposition-details.skeleton';
 
 type PropositionDetailsProps = {
-  proposition: Proposition;
+  proposition: Proposition | null;
 };
 
-export const PropositionDetails = ({
-  proposition,
-}: PropositionDetailsProps) => {
-  const { data: propositionDetails } = useGetPropositionDetailsQuery({
-    propositionId: proposition.id,
+export const PropositionDetails = ({ proposition }: PropositionDetailsProps) => {
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    if (proposition) {
+      setIsVisible(true);
+    } else {
+      setIsVisible(false);
+    }
+  }, [proposition]);
+
+  const { data: propositionDetails, isLoading: isDetailsLoading } = useGetPropositionDetailsQuery({
+    propositionId: proposition?.id ?? 0,
   });
-  const { data: propositionAuthors } = useGetPropositionAuthorsQuery({
-    propositionId: proposition.id,
+  const { data: propositionAuthors, isLoading: isAuthorsLoading } = useGetPropositionAuthorsQuery({
+    propositionId: proposition?.id ?? 0,
   });
+  const {
+    data: resumeData,
+    isLoading: isResumeLoading,
+    isError,
+  } = useGetPropositionResume(proposition?.id?.toString() ?? '');
 
   const propositionAuthorsWithId = propositionAuthors?.map((author) => {
     const a = author.uri.split('/');
@@ -25,75 +42,80 @@ export const PropositionDetails = ({
     };
   });
 
+  const isLoading = isDetailsLoading || isAuthorsLoading || isResumeLoading;
+
   return (
-    <div className="h-full w-1/2 px-10 pt-4">
-      <div
-        className="h-full w-full focus:outline-none rounded-lg gap-4 flex flex-col"
-        tabIndex={2}
-      >
-        <div className="bg-gray-300 font-bold text-black w-full p-2 text-center drop-shadow-md">
-          {propositionDetails?.dataApresentacao
-            ? Intl.DateTimeFormat('pt-BR').format(
-                new Date(propositionDetails.dataApresentacao)
-              )
-            : ''}
-        </div>
-        <table className="drop-shadow-md">
-          <tbody>
-            <tr className="border-b-2 border-gray-400/50">
-              <td className="bg-gray-300 text-center text-black p-2 w-1/2">
-                TIPO
-              </td>
-              <td className="bg-white text-black p-2 w-1/2">
-                {propositionDetails?.siglaTipo} -{' '}
-                {propositionDetails?.descricaoTipo}
-              </td>
-            </tr>
-            <tr className="border-b-2 border-gray-400/50">
-              <td className="bg-gray-300 text-center text-black p-2 w-1/2">
-                NÚMERO
-              </td>
-              <td className="bg-white text-black p-2 w-1/2">
-                {propositionDetails?.numero}
-              </td>
-            </tr>
-            <tr className="border-b-2 border-gray-400/50">
-              <td className="bg-gray-300 text-center text-black p-2 w-1/2">
-                STATUS
-              </td>
-              <td className="bg-white text-black p-2 w-1/2">
-                {propositionDetails?.statusProposicao.descricaoTramitacao}
-              </td>
-            </tr>
-            <tr className="">
-              <td className="bg-gray-300 text-center text-black p-2 w-1/2">
-                ORGÃO
-              </td>
-              <td className="bg-white text-black p-2 w-1/2">
-                {propositionDetails?.statusProposicao.siglaOrgao}
-              </td>
-            </tr>
-          </tbody>
-        </table>
+    <AnimatePresence mode="wait">
+      {isLoading ? (
+        <PropositionDetailsSkeleton key="skeleton" />
+      ) : (
+        isVisible && (
+          <motion.div
+            key="content"
+            className="h-full w-1/2 px-10 pt-4"
+            initial={{ x: '100%' }}
+            animate={{ x: 0 }}
+            exit={{ x: '100%' }}
+            transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+          >
+            <div className="h-full w-full focus:outline-none rounded-lg gap-4 flex flex-col" tabIndex={2}>
+              <div className="bg-gray-300 font-bold text-black w-full p-2 text-center drop-shadow-md">
+                {propositionDetails?.dataApresentacao
+                  ? Intl.DateTimeFormat('pt-BR').format(new Date(propositionDetails.dataApresentacao))
+                  : ''}
+              </div>
+              <table className="drop-shadow-md">
+                <tbody>
+                  <tr className="border-b-2 border-gray-400/50">
+                    <td className="bg-gray-300 text-center text-black p-2 w-1/2">TIPO</td>
+                    <td className="bg-white text-black p-2 w-1/2">
+                      {propositionDetails?.siglaTipo} - {propositionDetails?.descricaoTipo}
+                    </td>
+                  </tr>
+                  <tr className="border-b-2 border-gray-400/50">
+                    <td className="bg-gray-300 text-center text-black p-2 w-1/2">NÚMERO</td>
+                    <td className="bg-white text-black p-2 w-1/2">{propositionDetails?.numero}</td>
+                  </tr>
+                  <tr className="border-b-2 border-gray-400/50">
+                    <td className="bg-gray-300 text-center text-black p-2 w-1/2">STATUS</td>
+                    <td className="bg-white text-black p-2 w-1/2">
+                      {propositionDetails?.statusProposicao.descricaoTramitacao}
+                    </td>
+                  </tr>
+                  <tr className="">
+                    <td className="bg-gray-300 text-center text-black p-2 w-1/2">ORGÃO</td>
+                    <td className="bg-white text-black p-2 w-1/2">{propositionDetails?.statusProposicao.siglaOrgao}</td>
+                  </tr>
+                </tbody>
+              </table>
 
-        <div className=" drop-shadow-md">
-          <div className="bg-gray-300 font-bold text-black w-full p-2 text-center">
-            Autores
-          </div>
-          <div className="max-h-[150px] flex-col  overflow-y-auto flex bg-white w-full">
-            {propositionAuthorsWithId?.map((author) => (
-              <PersonCard key={author.id} tabIndex={3} personId={author.id} />
-            ))}
-          </div>
-        </div>
+              <div className=" drop-shadow-md">
+                <div className="bg-gray-300 font-bold text-black w-full p-2 text-center">Autores</div>
+                <div className="max-h-[150px] flex-col  overflow-y-auto flex bg-white w-full">
+                  {propositionAuthorsWithId?.map((author) => (
+                    <PersonCard key={author.id} tabIndex={3} personId={author.id} />
+                  ))}
+                </div>
+              </div>
 
-        <div
-          className=" drop-shadow-md bg-white p-4 overflow-y-auto"
-          tabIndex={4}
-        >
-          {propositionDetails?.ementa}
-        </div>
-      </div>
-    </div>
+              <div className=" drop-shadow-md bg-white p-4 overflow-y-auto" tabIndex={4}>
+                {isLoading ? (
+                  <p>Carregando resumo...</p>
+                ) : isError ? (
+                  <p>Erro ao carregar o resumo.</p>
+                ) : resumeData?.resume ? (
+                  <div>
+                    <p className="text-sm text-gray-500 mb-2">Resumo gerado por IA:</p>
+                    <p>{resumeData.resume}</p>
+                  </div>
+                ) : (
+                  <p>{proposition?.ementa}</p>
+                )}
+              </div>
+            </div>
+          </motion.div>
+        )
+      )}
+    </AnimatePresence>
   );
 };
