@@ -2,7 +2,7 @@
 
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import React, { useState, useEffect } from 'react';
-import { useMenuStore } from '../stores/use-menu-store';
+import { useMenuStore } from '../../app/(public)/proposition/stores/use-menu-store';
 
 export type ScrollMenuProps = {
   children: React.ReactNode[];
@@ -38,7 +38,7 @@ export const ScrollMenuButton = ({ icon, isActive = false, setActive }: ScrollMe
 export const ScrollMenu = ({ children }: ScrollMenuProps) => {
   const [startIndex, setStartIndex] = useState(0);
   const totalButtons = React.Children.count(children);
-  const visibleButtons = 4;
+  const visibleButtons = 5;
 
   const activeIndex = useMenuStore((state) => state.activeIndex);
   const setActiveIndex = useMenuStore((state) => state.setActiveIndex);

@@ -10,6 +10,7 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
 import { PropositionResume } from './proposition-resume';
+import { DetailsGrid, DetailsGridContent, DetailsGridHeader, DetailsGridRow } from '@/components/ui/details-grid';
 
 type PropositionDetailsProps = {
   proposition: Proposition | null;
@@ -68,46 +69,31 @@ export const PropositionDetails = ({ proposition }: PropositionDetailsProps) => 
             transition={{ type: 'spring', stiffness: 300, damping: 30 }}
           >
             <div className="h-full w-full focus:outline-none rounded-lg gap-4 flex flex-col" tabIndex={2}>
-              <div className="bg-gray-300 font-bold text-black w-full p-2 text-center drop-shadow-md">
+              <DetailsGridHeader>
                 {propositionDetails?.dataApresentacao
                   ? Intl.DateTimeFormat('pt-BR').format(new Date(propositionDetails.dataApresentacao))
                   : ''}
-              </div>
-              <table className="drop-shadow-md">
-                <tbody>
-                  <tr className="border-b-2 border-gray-400/50">
-                    <td className="bg-gray-300 text-center text-black p-2 w-1/2">TIPO</td>
-                    <td className="bg-white text-black p-2 w-1/2">
-                      {propositionDetails?.siglaTipo} - {propositionDetails?.descricaoTipo}
-                    </td>
-                  </tr>
-                  <tr className="border-b-2 border-gray-400/50">
-                    <td className="bg-gray-300 text-center text-black p-2 w-1/2">NÚMERO</td>
-                    <td className="bg-white text-black p-2 w-1/2">{propositionDetails?.numero}</td>
-                  </tr>
-                  <tr className="border-b-2 border-gray-400/50">
-                    <td className="bg-gray-300 text-center text-black p-2 w-1/2">STATUS</td>
-                    <td className="bg-white text-black p-2 w-1/2">
-                      {propositionDetails?.statusProposicao.descricaoTramitacao}
-                    </td>
-                  </tr>
-                  <tr className="">
-                    <td className="bg-gray-300 text-center text-black p-2 w-1/2">ORGÃO</td>
-                    <td className="bg-white text-black p-2 w-1/2">{propositionDetails?.statusProposicao.siglaOrgao}</td>
-                  </tr>
-                </tbody>
-              </table>
+              </DetailsGridHeader>
+              <DetailsGrid>
+                <DetailsGridRow
+                  label="TIPO"
+                  value={`${propositionDetails?.siglaTipo ?? ''} - ${propositionDetails?.descricaoTipo ?? ''}`}
+                />
+                <DetailsGridRow label="NÚMERO" value={propositionDetails?.numero} />
+                <DetailsGridRow label="STATUS" value={propositionDetails?.statusProposicao.descricaoTramitacao} />
+                <DetailsGridRow label="ORGÃO" value={propositionDetails?.statusProposicao.siglaOrgao} />
+              </DetailsGrid>
 
               <div className=" drop-shadow-md">
                 <div className="bg-gray-300 font-bold text-black w-full p-2 text-center">Autores</div>
-                <div className="max-h-[150px] flex-col  overflow-y-auto flex bg-white w-full">
+                <DetailsGridContent>
                   {propositionAuthorsWithId?.map((author) => (
                     <PersonCard key={author.id} tabIndex={3} personId={author.id} />
                   ))}
-                </div>
+                </DetailsGridContent>
               </div>
 
-              <div className="drop-shadow-md bg-white p-4 overflow-y-auto relative" tabIndex={4}>
+              <DetailsGridContent className="relative p-4" tabIndex={4}>
                 <div className="absolute top-4 right-4 flex gap-2">
                   {propositionDetails?.urlInteiroTeor && (
                     <Link
@@ -136,7 +122,7 @@ export const PropositionDetails = ({ proposition }: PropositionDetailsProps) => 
                 ) : isError ? (
                   <p>Erro ao carregar o resumo.</p>
                 ) : resumeData?.resume ? (
-                  <div>
+                  <div className="">
                     <p className="text-sm text-gray-500 mb-2">Resumo gerado por IA:</p>
                     {resumeData.resume.map((item, index) => (
                       <div key={index} className="mb-4">
@@ -148,10 +134,10 @@ export const PropositionDetails = ({ proposition }: PropositionDetailsProps) => 
                 ) : (
                   <div>
                     <p className="text-sm text-gray-500 mb-2">Ementa:</p>
-                    <p>{proposition?.ementa}</p>
+                    <p className="mt-6">{proposition?.ementa}</p>
                   </div>
                 )}
-              </div>
+              </DetailsGridContent>
             </div>
           </motion.div>
         )

@@ -1,15 +1,10 @@
 import React from 'react';
-import { Vote } from '../types/GetVotingSessionVotesResponse';
-import {
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-  type ChartConfig,
-} from '@/components/ui/chart';
+import { Vote } from '../../../../types/GetVotingSessionVotesResponse';
+import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from '@/components/ui/chart';
 import { LabelList, Pie, PieChart } from 'recharts';
 import { cn } from '@/lib/utils';
 import { ColorUtils } from '../utils/colors';
-import { PartyVotes } from '../types/PartyVotes';
+import { PartyVotes } from '../../../../types/PartyVotes';
 
 const chartConfig = {
   count: {
@@ -68,14 +63,9 @@ export const VotingSessionChart = ({ votes, className }: Props) => {
   }, [] as { type: string; count: number; fill: string }[]);
 
   return (
-    <ChartContainer
-      config={chartConfig}
-      className={cn('min-h-[200px] w-full', className)}
-    >
+    <ChartContainer config={chartConfig} className={cn('min-h-[200px] w-full', className)}>
       <PieChart data={votesByType}>
-        <ChartTooltip
-          content={<ChartTooltipContent nameKey="count" hideLabel />}
-        />
+        <ChartTooltip content={<ChartTooltipContent nameKey="count" hideLabel />} />
         <Pie data={votesByType} dataKey="count">
           <LabelList
             dataKey="type"

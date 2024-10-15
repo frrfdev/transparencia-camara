@@ -1,8 +1,8 @@
 'use client';
 
 import { useQuery } from '@tanstack/react-query';
-import { ProjectVotingSessionsResponse } from '../../../../../types/GetProjectVotingSessionsResponse';
 import { api } from '@/lib/api';
+import { ProjectVotingSessionsResponse } from '@/types/GetProjectVotingSessionsResponse';
 
 type UseGetProjectVotingSessionsQueryProps = {
   projectId: string;

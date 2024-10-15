@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
-import { GetProjectResponse } from '../../../../../types/GetProjectResponse';
 import { api } from '@/lib/api';
+import { GetProjectResponse } from '@/types/GetProjectResponse';
 
 export const useGetProjectQuery = (projectId: string) => {
   return useQuery({

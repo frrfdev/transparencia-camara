@@ -1,6 +1,6 @@
 import React from 'react';
 import { PersonVoteCard } from './person-vote-card';
-import { Vote } from '../types/GetVotingSessionVotesResponse';
+import { Vote } from '../../../../types/GetVotingSessionVotesResponse';
 type Props = {
   votes: Vote[];
 };

@@ -1,18 +1,13 @@
 import React, { useMemo, useState } from 'react';
-import { VotingSession } from '../types/GetProjectVotingSessionsResponse';
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from '@/components/ui/accordion';
+import { VotingSession } from '../../../../types/GetProjectVotingSessionsResponse';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { useGetProjectVotingSessionsQuery } from '../hooks/api/use-get-project-voting-sessions.query';
 import { useGetVotingSessionVotesQuery } from '../hooks/api/use-get-voting-session-votes.query';
 import { VotingSessionChart } from './voting-session-chart';
 import { VotingSessionPartyChart } from './voting-session-party-chart';
 import { VotingSessionPersonVotes } from './voting-session-person-votes';
 import { VoteUtils } from '../utils/vote';
-import { PartyVotes } from '../types/PartyVotes';
+import { PartyVotes } from '../../../../types/PartyVotes';
 
 type VotingSessionProps = {
   projectId: string;
@@ -43,9 +38,7 @@ export const VotingSessions = ({ projectId }: VotingSessionProps) => {
   return (
     <div>
       {isLoadingVotingSessions && <p>Loading voting sessions...</p>}
-      {votingSessionsError && (
-        <p>Error: {(votingSessionsError as Error).message}</p>
-      )}
+      {votingSessionsError && <p>Error: {(votingSessionsError as Error).message}</p>}
       {votingSessions && (
         <div>
           <h1>Sessões de Votação</h1>
@@ -56,25 +49,15 @@ export const VotingSessions = ({ projectId }: VotingSessionProps) => {
   );
 };
 
-const VotingSessionAccordion = ({
-  votingSessions,
-}: VotingSessionAccordionProps) => {
-  const [selectedVotingSessionId, setSelectedVotingSessionId] = useState<
-    string | null
-  >(null);
+const VotingSessionAccordion = ({ votingSessions }: VotingSessionAccordionProps) => {
+  const [selectedVotingSessionId, setSelectedVotingSessionId] = useState<string | null>(null);
 
   const filterVotingSessionsWithVotes = (votingSessions: VotingSession[]) => {
-    return votingSessions.filter((votingSession) =>
-      votingSession.descricao.includes('Total:')
-    );
+    return votingSessions.filter((votingSession) => votingSession.descricao.includes('Total:'));
   };
 
   return (
-    <Accordion
-      type="single"
-      collapsible
-      onValueChange={setSelectedVotingSessionId}
-    >
+    <Accordion type="single" collapsible onValueChange={setSelectedVotingSessionId}>
       {filterVotingSessionsWithVotes(votingSessions).map((votingSession) => (
         <AccordionItem value={votingSession.id} key={votingSession.id}>
           <AccordionTrigger>
@@ -93,21 +76,16 @@ const VotingSessionAccordion = ({
   );
 };
 
-const VotingSessionAccordionTrigger = ({
-  votingSession,
-}: VotingSessionAccordionItemProps) => {
+const VotingSessionAccordionTrigger = ({ votingSession }: VotingSessionAccordionItemProps) => {
   return (
     <li key={votingSession.id}>
-      Date: {votingSession.data}, Description: {votingSession.descricao},
-      Approved: {votingSession.aprovacao ? 'Yes' : 'No'}
+      Date: {votingSession.data}, Description: {votingSession.descricao}, Approved:{' '}
+      {votingSession.aprovacao ? 'Yes' : 'No'}
     </li>
   );
 };
 
-const VotingSessionAccordionContent = ({
-  votingSessionId,
-  isOpen,
-}: VotingSessionAccordionContentProps) => {
+const VotingSessionAccordionContent = ({ votingSessionId, isOpen }: VotingSessionAccordionContentProps) => {
   const [filter, setFilter] = useState<{
     party: string;
     voteType: string;
@@ -138,16 +116,11 @@ const VotingSessionAccordionContent = ({
     const voteType = VoteUtils.voteTypeTextToSlug(filter.voteType);
 
     return votingSessionVotes?.dados.filter(
-      (vote) =>
-        vote.deputado_.siglaPartido === filter.party &&
-        vote.tipoVoto === voteType
+      (vote) => vote.deputado_.siglaPartido === filter.party && vote.tipoVoto === voteType
     );
   }, [filter, votingSessionVotes]);
 
-  if (
-    (!votingSessionVotes || !votingSessionVotes.dados.length) &&
-    !isLoadingVotes
-  )
+  if ((!votingSessionVotes || !votingSessionVotes.dados.length) && !isLoadingVotes)
     return <div>No votes for this voting session</div>;
 
   if (isLoadingVotes) return <p>Loading votes...</p>;
@@ -156,10 +129,7 @@ const VotingSessionAccordionContent = ({
   return (
     <div className="flex flex-col gap-4">
       <div className="flex gap-4">
-        <VotingSessionChart
-          votes={votingSessionVotes?.dados ?? []}
-          className="max-h-[500px]"
-        />
+        <VotingSessionChart votes={votingSessionVotes?.dados ?? []} className="max-h-[500px]" />
         <VotingSessionPartyChart
           votes={votingSessionVotes?.dados ?? []}
           className="max-h-[500px]"
@@ -167,9 +137,7 @@ const VotingSessionAccordionContent = ({
         />
       </div>
 
-      {votingSessionVotes && (
-        <VotingSessionPersonVotes votes={filteredVotes ?? []} />
-      )}
+      {votingSessionVotes && <VotingSessionPersonVotes votes={filteredVotes ?? []} />}
     </div>
   );
 };

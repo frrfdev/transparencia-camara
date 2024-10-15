@@ -1,7 +1,7 @@
 'use client';
 
 import { useQuery } from '@tanstack/react-query';
-import { VotingSessionVotesResponse } from '../../../../../types/GetVotingSessionVotesResponse';
+import { VotingSessionVotesResponse } from '../../types/GetVotingSessionVotesResponse';
 import { api } from '@/lib/api';
 
 type UseGetVotingSessionVotesQueryProps = {
