@@ -51,9 +51,7 @@ export const MenuProvider = ({ children }: Props) => {
       const updatedOptions = [...prev];
 
       options.forEach((newOption) => {
-        const existingIndex = updatedOptions.findIndex(
-          (option) => option.key === newOption.key
-        );
+        const existingIndex = updatedOptions.findIndex((option) => option.key === newOption.key);
 
         if (existingIndex !== -1) {
           // Replace the existing option
@@ -81,15 +79,10 @@ export const MenuProvider = ({ children }: Props) => {
     if (optionWithKey) {
       optionWithKey.action();
     }
-    if (e.key === 'Escape') {
-      options[options.length - 1].action();
-    }
   };
 
   return (
-    <MenuContext.Provider
-      value={{ options, addOption, removeOption, resetOptions, addOptions }}
-    >
+    <MenuContext.Provider value={{ options, addOption, removeOption, resetOptions, addOptions }}>
       <div className="h-full w-full overflow-hidden" onKeyDown={handleKeyDown}>
         {children}
       </div>

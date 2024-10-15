@@ -1,10 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import {
-  GetPropositionsParams,
-  useGetPropositionsQuery,
-} from '../hooks/api/use-get-propositions.query';
+import { GetPropositionsParams, useGetPropositionsQuery } from '../hooks/api/use-get-propositions.query';
 import { usePagination } from '@/hooks/use-pagination';
 import { PropositionDetails } from './proposition-details';
 import { useMenuContext } from '@/app/providers/menu-provider';
@@ -20,8 +17,7 @@ export const PropositionsList = () => {
   const { paginationConfig, dispatchPagination } = usePagination();
   const { addOptions, removeOption } = useMenuContext();
   const router = useRouter();
-  const { selectedPropositionId, setSelectedPropositionId } =
-    usePropositionListStore();
+  const { selectedPropositionId, setSelectedPropositionId } = usePropositionListStore();
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const searchParams = useSearchParams();
   const typeAcronym = searchParams?.get('typeAcronym');
@@ -70,11 +66,7 @@ export const PropositionsList = () => {
   return (
     <div className="h-full w-full flex gap-2 pb-4 relative overflow-hidden">
       <div className="flex flex-col p-10 pt-4 pb-0 h-full w-1/2">
-        <InfiniteList
-          isLoading={isLoading}
-          fetchNextPage={fetchNextPage}
-          className="p-4"
-        >
+        <InfiniteList isLoading={isLoading} fetchNextPage={fetchNextPage} className="p-4">
           <div className="h-full flex w-full flex-col gap-4">
             {propositions?.pages
               .flatMap((page) => page.data)
@@ -100,23 +92,20 @@ export const PropositionsList = () => {
               ))}
             {isLoading || isFetchingNextPage
               ? Array.from(Array(paginationConfig.pageSize)).map((_, index) => (
-                  <PropositionButton
-                    key={`prop-${index}`}
-                    isLoading={true}
-                    proposition={{} as Proposition}
-                  />
+                  <PropositionButton key={`prop-${index}`} isLoading={true} proposition={{} as Proposition} />
                 ))
               : null}
           </div>
         </InfiniteList>
       </div>
-      {selectedPropositionId && selectedProposition && (
-        <PropositionDetails proposition={selectedProposition} />
-      )}
+      {selectedPropositionId && selectedProposition && <PropositionDetails proposition={selectedProposition} />}
 
       <PropositionsFilter
         onFilter={(values) => {
           router.push(`/patch-notes?${UrlUtils.buildQueryString(values)}`);
+        }}
+        close={() => {
+          setIsFilterOpen(false);
         }}
         isOpen={isFilterOpen}
       />

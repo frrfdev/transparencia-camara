@@ -2,13 +2,7 @@ import React, { useState, useEffect, useRef, LegacyRef, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { ComboBox } from '@/components/ui/combo';
 import { cn } from '@/lib/utils';
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormMessage,
-} from '@/components/ui/form';
+import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { useForm } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
 import { z } from 'zod';
@@ -20,6 +14,7 @@ import { markForFocusLater, returnFocus } from '@/lib/focusManager';
 import { InputSound } from '@/components/ui/inut-sound';
 import { SlideIntoView } from '@/components/animated/slide-into-view';
 import { useSearchParams } from 'next/navigation';
+import { useMenuContext } from '@/app/providers/menu-provider';
 
 const formSchema = z.object({
   typeAcronym: z.array(z.string()).nullable(),
@@ -29,9 +24,12 @@ const formSchema = z.object({
 type Props = {
   onFilter: (filter: z.infer<typeof formSchema>) => void;
   isOpen: boolean;
+  close: () => void;
 };
 
-export const PropositionsFilter = ({ onFilter, isOpen }: Props) => {
+export const PropositionsFilter = ({ onFilter, isOpen, close }: Props) => {
+  const { addOption, removeOption } = useMenuContext();
+
   const firstFieldRef = useRef<HTMLDivElement | null>(null);
   const [shouldHide, setShouldHide] = useState(true);
   const [portalElement, setPortalElement] = useState<HTMLElement | null>(null);
@@ -43,17 +41,10 @@ export const PropositionsFilter = ({ onFilter, isOpen }: Props) => {
 
   const { data: propositionTypes, isLoading } = useGetPropositionTypesQuery();
 
-  const typeOptions = DataConverter.toSelectOptions(
-    propositionTypes ?? [],
-    'cod',
-    'nome'
-  );
+  const typeOptions = DataConverter.toSelectOptions(propositionTypes ?? [], 'cod', 'nome');
 
   const yearOptions = DataConverter.toSelectOptions(
-    Array.from(
-      { length: new Date().getFullYear() - 1999 },
-      (_, i) => i + 2000
-    ).map((year) => ({
+    Array.from({ length: new Date().getFullYear() - 1999 }, (_, i) => i + 2000).map((year) => ({
       value: year.toString(),
       label: year.toString(),
     })),
@@ -97,7 +88,23 @@ export const PropositionsFilter = ({ onFilter, isOpen }: Props) => {
   };
 
   useEffect(() => {
-    if (isOpen) setShouldHide(false);
+    if (isOpen) {
+      setShouldHide(false);
+      addOption({
+        key: 'Escape',
+        label: 'Fechar',
+        icon: 'Esc',
+        action: () => {
+          close();
+        },
+      });
+    } else {
+      removeOption('Escape');
+    }
+
+    return () => {
+      removeOption('Escape');
+    };
   }, [isOpen]);
 
   useEffect(() => {

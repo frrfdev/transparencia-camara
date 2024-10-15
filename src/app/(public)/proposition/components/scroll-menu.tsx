@@ -14,11 +14,7 @@ export type ScrollMenuButtonProps = {
   setActive?: () => void;
 };
 
-export const ScrollMenuButton = ({
-  icon,
-  isActive = false,
-  setActive,
-}: ScrollMenuButtonProps) => {
+export const ScrollMenuButton = ({ icon, isActive = false, setActive }: ScrollMenuButtonProps) => {
   return (
     <button
       data-active={isActive}
@@ -42,7 +38,7 @@ export const ScrollMenuButton = ({
 export const ScrollMenu = ({ children }: ScrollMenuProps) => {
   const [startIndex, setStartIndex] = useState(0);
   const totalButtons = React.Children.count(children);
-  const [visibleButtons, setVisibleButtons] = useState(6);
+  const visibleButtons = 4;
 
   const activeIndex = useMenuStore((state) => state.activeIndex);
   const setActiveIndex = useMenuStore((state) => state.setActiveIndex);
@@ -56,18 +52,20 @@ export const ScrollMenu = ({ children }: ScrollMenuProps) => {
   const handleScroll = (direction: 'left' | 'right') => {
     if (direction === 'right') {
       if (activeIndex < visibleButtons - 1) {
+        // If not at the last visible button, just move the active index
         setActiveIndex(activeIndex + 1);
       } else {
-        setStartIndex((prevStart) => (prevStart + 1) % totalButtons);
+        // If at the last visible button, scroll and reset active index
+        setStartIndex((startIndex + 1) % totalButtons);
         setActiveIndex(0);
       }
     } else {
       if (activeIndex > 0) {
+        // If not at the first visible button, just move the active index
         setActiveIndex(activeIndex - 1);
       } else {
-        setStartIndex(
-          (prevStart) => (prevStart - 1 + totalButtons) % totalButtons
-        );
+        // If at the first visible button, scroll and set active index to last visible
+        setStartIndex((startIndex - 1 + totalButtons) % totalButtons);
         setActiveIndex(visibleButtons - 1);
       }
     }
@@ -85,22 +83,6 @@ export const ScrollMenu = ({ children }: ScrollMenuProps) => {
   useEffect(() => {
     playSound();
   }, [activeIndex]);
-
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth < 640) {
-        setVisibleButtons(3);
-      } else if (window.innerWidth < 768) {
-        setVisibleButtons(4);
-      } else {
-        setVisibleButtons(6);
-      }
-    };
-
-    handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
 
   return (
     <div className="relative w-full overflow-hidden">
