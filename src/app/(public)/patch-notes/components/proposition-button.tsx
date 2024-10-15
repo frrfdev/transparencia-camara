@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Proposition } from '../types/Proposition';
 import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
+import { usePropositionListStore } from '../stores/use-proposition-list-store';
 type Props = {
   proposition: Proposition;
   isSelected?: boolean;
@@ -27,9 +28,39 @@ export const PropositionButton = ({
   isLoading,
   ...props
 }: Props) => {
+  const { selectedPropositionId } = usePropositionListStore();
+  const buttonRef = useRef<HTMLButtonElement | null>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  useEffect(() => {
+    if (buttonRef.current) {
+      if (selectedPropositionId === proposition.id) {
+        setTimeout(() => {
+          console.log(document.activeElement);
+          if (buttonRef.current !== document.activeElement) {
+            buttonRef.current?.focus();
+          }
+        }, 10);
+      }
+    }
+  }, [selectedPropositionId, proposition.id]);
+
+  useEffect(() => {
+    if (
+      selectedPropositionId === proposition.id &&
+      (audioRef.current?.paused || !audioRef.current)
+    ) {
+      const audio = new Audio('/assets/audio/focus.wav');
+      audioRef.current = audio;
+      audio.volume = 0.05;
+      audio.play();
+    }
+  }, [selectedPropositionId, proposition.id]);
+
   return (
     <div className="w-full h-max relative">
       <button
+        ref={buttonRef}
         className={cn(
           'font-medium w-full relative overflow-hidden flex h-[80px] items-center rounded-full bg-white shadow-[rgba(17,_17,_26,_0.1)_0px_0px_16px] hover:bg-purple-200',
           'focus:bg-gradient-to-r from-neutral-950 to-neutral-900 focus:text-white focus:font-bold',

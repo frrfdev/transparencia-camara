@@ -4,7 +4,7 @@ import { Proposition } from '../types/Proposition';
 import { PersonCard } from './person-card';
 import { useGetPropositionResume } from '../hooks/api/use-get-proposition-resume';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { PropositionDetailsSkeleton } from './proposition-details.skeleton';
 import Link from 'next/link';
 
@@ -17,25 +17,28 @@ export const PropositionDetails = ({
 }: PropositionDetailsProps) => {
   const [isVisible, setIsVisible] = useState(false);
 
+  console.log(proposition);
+
   useEffect(() => {
     if (proposition) {
+      console.log('show');
       setIsVisible(true);
     } else {
       setIsVisible(false);
     }
   }, [proposition]);
 
-  const { data: propositionDetails, isLoading: isDetailsLoading } =
+  const { data: propositionDetails, isPending: isDetailsLoading } =
     useGetPropositionDetailsQuery({
       propositionId: proposition?.id ?? 0,
     });
-  const { data: propositionAuthors, isLoading: isAuthorsLoading } =
+  const { data: propositionAuthors, isPending: isAuthorsLoading } =
     useGetPropositionAuthorsQuery({
       propositionId: proposition?.id ?? 0,
     });
   const {
     data: resumeData,
-    isLoading: isResumeLoading,
+    isPending: isResumeLoading,
     isError,
   } = useGetPropositionResume(proposition?.id?.toString() ?? '');
 
@@ -47,7 +50,9 @@ export const PropositionDetails = ({
     };
   });
 
-  const isLoading = isDetailsLoading || isAuthorsLoading || isResumeLoading;
+  const isLoading = useMemo(() => {
+    return isDetailsLoading;
+  }, [isDetailsLoading]);
 
   return (
     <AnimatePresence mode="wait">

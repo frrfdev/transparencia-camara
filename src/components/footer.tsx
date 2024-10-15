@@ -2,14 +2,35 @@
 
 import { useMenuContext } from '@/app/providers/menu-provider';
 import { ArrowLeft } from 'lucide-react';
-import React from 'react';
+import { useRouter } from 'next/navigation';
+import React, { useEffect } from 'react';
 
 export const Footer = (props: React.HTMLAttributes<HTMLDivElement>) => {
   const { options } = useMenuContext();
+  const router = useRouter();
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Backspace') {
+        router.back();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [router]);
 
   return (
     <footer className="bg-black p-4 flex justify-between" {...props}>
-      <button className="flex gap-2 items-center focus:outline-none hover:text-orange-500 focus:text-orange-500 group">
+      <button
+        className="flex gap-2 items-center focus:outline-none hover:text-orange-500 focus:text-orange-500 group"
+        onClick={() => {
+          router.back();
+        }}
+      >
         <div className="bg-white rounded-full w-6 h-6 max-w-6 flex items-center justify-center">
           <ArrowLeft size={16}></ArrowLeft>
         </div>

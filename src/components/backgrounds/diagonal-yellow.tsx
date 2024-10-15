@@ -1,5 +1,15 @@
+import { cn } from '@/lib/utils';
 import * as React from 'react';
-export const DiagonalYellow = (props: React.SVGProps<SVGSVGElement>) => (
+
+export type DiagonalBackgroundElementProps = React.SVGProps<SVGSVGElement> & {
+  innerClassName?: string;
+  outerClassName?: string;
+};
+export const DiagonalBackgroundElement = ({
+  innerClassName,
+  outerClassName,
+  ...props
+}: DiagonalBackgroundElementProps) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     xmlSpace="preserve"
@@ -14,15 +24,11 @@ export const DiagonalYellow = (props: React.SVGProps<SVGSVGElement>) => (
   >
     <path
       d="M245.5 0 0 540h526.5V0h-281Z"
-      style={{
-        fill: '#ffc700',
-      }}
+      className={cn('fill-[#ffc700]', outerClassName)}
     />
     <path
       d="M273 0 27.5 540h499V0H273Z"
-      style={{
-        fill: '#ffd000',
-      }}
+      className={cn('fill-[#ffd000]', innerClassName)}
     />
   </svg>
 );

@@ -60,6 +60,7 @@ export type ComboBoxProps<T> = Omit<
   selectAll?: boolean;
   searchPlaceholder?: string;
   options: T[];
+  tabIndex?: number;
   initialOptions?: T[];
   onValueChange?: (
     value: string | null,
@@ -104,6 +105,7 @@ const Combo = <T extends OptionData>(
     mode = 'single',
     selectAll,
     optionClassName,
+		tabIndex,
     ..._
   }: ComboBoxProps<T>,
   ref: React.Ref<HTMLInputElement> | null
@@ -330,7 +332,7 @@ const Combo = <T extends OptionData>(
         value={value}
         onChange={() => null}
         className="w-0 h-0 absolute"
-        tabIndex={0}
+        tabIndex={tabIndex ?? 0}
         ref={(element) => {
           inputRef.current = element;
           if (typeof ref === 'function') {

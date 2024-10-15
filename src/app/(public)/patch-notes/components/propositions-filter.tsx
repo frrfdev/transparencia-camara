@@ -130,12 +130,13 @@ export const PropositionsFilter = ({ onFilter, isOpen }: Props) => {
             render={({ field }) => (
               <FormItem>
                 <FormControl>
-                  <InputSound>
+                  <InputSound disabled={!isOpen}>
                     <ComboBox
                       {...field}
                       mode="multi"
                       value={field.value ?? []}
                       isLoading={isLoading}
+                      tabIndex={isOpen ? 0 : -1}
                       options={typeOptions}
                       onFocus={handleFocusTypeAcronym}
                       ref={(element: HTMLInputElement | null) => {
@@ -158,9 +159,10 @@ export const PropositionsFilter = ({ onFilter, isOpen }: Props) => {
             render={({ field }) => (
               <FormItem>
                 <FormControl>
-                  <InputSound>
+                  <InputSound disabled={!isOpen}>
                     <ComboBox
                       {...field}
+                      tabIndex={isOpen ? 0 : -1}
                       value={field.value ?? []}
                       options={yearOptions}
                       placeholder="Ano"

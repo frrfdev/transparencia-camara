@@ -3,14 +3,18 @@ import { motion, MotionProps } from 'framer-motion';
 import { cn } from '@/lib/utils';
 
 type Props = MotionProps & {
+  direction?: 'right' | 'left';
   shouldHide: boolean;
   isOpen: boolean;
   className?: string;
 };
 
 const variants = {
-  open: { right: '0' },
-  closed: { right: '-40%' },
+  right: { open: { right: '0' }, closed: { right: '-40%' } },
+  left: {
+    open: { left: '0' },
+    closed: { left: '-40%' },
+  },
 };
 
 export const SlideIntoView = ({
@@ -18,6 +22,7 @@ export const SlideIntoView = ({
   className,
   shouldHide,
   isOpen,
+  direction = 'right',
   ...props
 }: Props) => {
   return (
@@ -30,7 +35,7 @@ export const SlideIntoView = ({
         className
       )}
       animate={isOpen ? 'open' : 'closed'}
-      variants={variants}
+      variants={variants[direction]}
     >
       {children}
     </motion.div>
