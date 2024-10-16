@@ -1,4 +1,4 @@
-import React, { forwardRef } from 'react';
+import React, { forwardRef, useEffect, useRef } from 'react';
 import { ButtonProps } from './button';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
@@ -20,10 +20,13 @@ export const PokemonButton = forwardRef<HTMLButtonElement, PokemonButtonProps>(
       detailRender,
       color = '#9333ea',
       skeletonColor = '#9333ea',
+      onFocus,
       ...props
     },
     ref
   ) => {
+    const audioRef = useRef<HTMLAudioElement | null>(null);
+
     const variants = {
       loading: {
         background: color,
@@ -37,12 +40,30 @@ export const PokemonButton = forwardRef<HTMLButtonElement, PokemonButtonProps>(
       },
     };
 
+    useEffect(() => {
+      if (isSelected && (audioRef.current?.paused || !audioRef.current)) {
+        const audio = new Audio('/assets/audio/focus.wav');
+        audioRef.current = audio;
+        audio.volume = 0.05;
+        audio.play();
+      }
+    }, [isSelected]);
+
     return (
       <button
         ref={ref}
         data-selected={isSelected}
+        onFocus={(e) => {
+          onFocus?.(e);
+          if (!isSelected) {
+            const audio = new Audio('/assets/audio/focus.wav');
+            audioRef.current = audio;
+            audio.volume = 0.05;
+            audio.play();
+          }
+        }}
         className={cn(
-          'font-medium w-full relative overflow-hidden flex h-[80px] items-center rounded-full bg-white shadow-[rgba(17,_17,_26,_0.1)_0px_0px_16px] hover:bg-purple-200 transition-all',
+          'font-medium w-full relative overflow-hidden flex h-[80px] items-center rounded-full bg-white shadow-[rgba(17,_17,_26,_0.1)_0px_0px_16px] hover:bg-purple-200 transition-all pr-4',
           'focus:bg-gradient-to-r from-neutral-950 to-neutral-900 focus:text-white focus:font-bold',
           'data-[selected=true]:bg-gradient-to-r data-[selected=true]:from-neutral-950 data-[selected=true]:to-neutral-900 data-[selected=true]:text-white data-[selected=true]:font-bold'
         )}

@@ -9,9 +9,13 @@ type UseGetPropositionResumeProps = {
 export const useGetPropositionResume = ({
   propositionId,
 }: UseGetPropositionResumeProps) => {
+  console.log(propositionId, 'propositionId');
   return useQuery<PropositionResumeData | null>({
     queryKey: ['propositionResume', propositionId],
-    queryFn: () => getPropositionResume(propositionId),
+    queryFn: () => {
+      console.log('aaa');
+      return getPropositionResume(propositionId);
+    },
     enabled: !!propositionId,
   });
 };

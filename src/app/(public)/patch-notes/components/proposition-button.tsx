@@ -31,7 +31,6 @@ export const PropositionButton = ({
 }: Props) => {
   const { selectedPropositionId } = usePropositionListStore();
   const buttonRef = useRef<HTMLButtonElement | null>(null);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
     if (buttonRef.current) {
@@ -43,18 +42,6 @@ export const PropositionButton = ({
           }
         }, 10);
       }
-    }
-  }, [selectedPropositionId, proposition.id]);
-
-  useEffect(() => {
-    if (
-      selectedPropositionId === proposition.id &&
-      (audioRef.current?.paused || !audioRef.current)
-    ) {
-      const audio = new Audio('/assets/audio/focus.wav');
-      audioRef.current = audio;
-      audio.volume = 0.05;
-      audio.play();
     }
   }, [selectedPropositionId, proposition.id]);
 

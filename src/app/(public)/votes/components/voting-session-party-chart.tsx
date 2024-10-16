@@ -1,10 +1,16 @@
 import React from 'react';
 import { Vote } from '../../../../types/GetVotingSessionVotesResponse';
-import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from '@/components/ui/chart';
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+  type ChartConfig,
+} from '@/components/ui/chart';
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from 'recharts';
 import { cn } from '@/lib/utils';
 import { ColorUtils } from '../utils/colors';
 import { PartyVotes } from '../../../../types/PartyVotes';
+import { PartyIcon } from '../../patch-notes/components/party-icon';
 
 const chartConfig = {
   yes: {
@@ -35,7 +41,11 @@ type Props = {
   onBarClick?: (barKey: string, data: PartyVotes) => void;
 };
 
-export const VotingSessionPartyChart = ({ votes, className, onBarClick }: Props) => {
+export const VotingSessionPartyChart = ({
+  votes,
+  className,
+  onBarClick,
+}: Props) => {
   // first we nee to create a division by the deputado_.siglaPartido
   // and then separate in two values, yes and no, so i can make a chart, there is one more value "Obstrução"
   const votesByParty = votes.reduce((acc, vote) => {
@@ -68,7 +78,10 @@ export const VotingSessionPartyChart = ({ votes, className, onBarClick }: Props)
   }, [] as { party: string; yes: number; no: number; obstruction: number; abstention: number; article17: number }[]);
 
   return (
-    <ChartContainer config={chartConfig} className={cn('min-h-[200px] w-full', className)}>
+    <ChartContainer
+      config={chartConfig}
+      className={cn('min-h-[200px] w-full', className)}
+    >
       <BarChart
         accessibilityLayer
         data={votesByParty.sort((a, b) => {
@@ -86,8 +99,7 @@ export const VotingSessionPartyChart = ({ votes, className, onBarClick }: Props)
           dataKey="party"
           tickLine={false}
           tickMargin={10}
-          axisLine={false}
-          tickFormatter={(value) => value.slice(0, 3)}
+          tickFormatter={(value: string) => value.slice(0, 3)}
         />
         <YAxis />
         <ChartTooltip content={<ChartTooltipContent />} />

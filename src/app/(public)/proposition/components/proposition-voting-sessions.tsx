@@ -6,27 +6,33 @@ import { useParams } from 'next/navigation';
 import { PropositionTab } from './proposition-tab';
 import { PokemonButton } from '@/components/ui/pokemon-button';
 import { CircleCheck, CircleX } from 'lucide-react';
+import { useVotingSessionStore } from '../stores/use-voting-session-store';
+import { VotingSessionVotes } from './voting-session-votes';
 
 export const PropositionVotingSessions = () => {
   const params = useParams();
   const { id } = params;
+  const { selectedVotingSession, setSelectedVotingSession } =
+    useVotingSessionStore();
 
   const { data: votingSessions, isLoading } =
     useGetPropositionVotingSessionsQuery({
       projectId: id as string,
     });
 
-  console.log(votingSessions);
-
   if (isLoading) return <div>Loading...</div>;
 
   if (!votingSessions) return <div>No data</div>;
 
   return (
-    <PropositionTab className="p-4">
+    <PropositionTab className="p-4 flex gap-4 overflow-hidden h-full">
       <div className="w-1/2 h-full flex flex-col gap-2">
         {votingSessions.dados.map((votingSession) => (
           <PokemonButton
+            onFocus={() => {
+              setSelectedVotingSession(votingSession.id);
+            }}
+            isSelected={selectedVotingSession === votingSession.id}
             key={votingSession.id}
             color={votingSession.aprovacao === 1 ? '#22C55E' : '#F43F5E'}
             skeletonColor="#f0f0f0"
@@ -50,6 +56,9 @@ export const PropositionVotingSessions = () => {
           </PokemonButton>
         ))}
       </div>
+      {selectedVotingSession && (
+        <VotingSessionVotes votingSessionId={selectedVotingSession} />
+      )}
     </PropositionTab>
   );
 };
