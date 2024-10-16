@@ -34,7 +34,10 @@ export const Footer = (props: React.HTMLAttributes<HTMLDivElement>) => {
         <div className="bg-white rounded-full w-6 h-6 max-w-6 flex items-center justify-center">
           <ArrowLeft size={16}></ArrowLeft>
         </div>
-        <span className="text-white group-hover:text-orange-500 group-focus:text-orange-500 text-md uppercase font-bold">
+        <span
+          className="text-white group-hover:text-orange-500 group-focus:text-orange-500 text-md uppercase font-bold"
+          tabIndex={10}
+        >
           Voltar
         </span>
       </button>
@@ -44,6 +47,7 @@ export const Footer = (props: React.HTMLAttributes<HTMLDivElement>) => {
             key={option.key}
             className="flex gap-2 items-center focus:outline-none hover:text-orange-500 focus:text-orange-500 group"
             onClick={() => option.action()}
+            tabIndex={10}
           >
             <div className="bg-white rounded-full w-6 h-6 max-w-6 flex items-center justify-center">
               {option.icon}

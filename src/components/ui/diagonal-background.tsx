@@ -11,6 +11,7 @@ import { cn } from '@/lib/utils';
 type DiagonalBackgroundProps = {
   children: React.ReactNode;
   direction?: 'left' | 'right';
+  className?: string;
 } & Pick<DiagonalBackgroundElementProps, 'outerClassName' | 'innerClassName'>;
 
 export const DiagonalBackground = ({
@@ -18,6 +19,7 @@ export const DiagonalBackground = ({
   direction = 'right',
   outerClassName,
   innerClassName,
+  className,
 }: DiagonalBackgroundProps) => {
   return (
     <div className="relative h-full w-full overflow-hidden ">
@@ -50,7 +52,12 @@ export const DiagonalBackground = ({
           innerClassName={innerClassName}
         ></DiagonalBackgroundElement>
       </motion.div>
-      <div className="relative z-10 w-full h-full flex flex-col overflow-hidden">
+      <div
+        className={cn(
+          'relative z-10 w-full h-full flex flex-col overflow-hidden',
+          className
+        )}
+      >
         {children}
       </div>
     </div>

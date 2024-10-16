@@ -12,6 +12,9 @@ const config: Config = {
       backgroundImage: {
         'main-bg': "url('/assets/images/background/bg.webp')",
       },
+      dropShadow: {
+        soft: '0px 0px 8px rgba(17, 17, 26, 0.1)',
+      },
       colors: {
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',

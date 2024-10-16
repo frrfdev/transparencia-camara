@@ -17,7 +17,9 @@ export async function getPropositionResume(propositionId: string) {
     const database = client.db('resume_db');
     const resumes = database.collection('resumes');
 
-    const resume = await resumes.findOne({ proposition_number: propositionId });
+    const resume = await resumes.findOne({
+      proposition_number: Number(propositionId),
+    });
 
     if (!resume) {
       return null;

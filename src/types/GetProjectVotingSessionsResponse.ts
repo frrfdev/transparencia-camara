@@ -14,7 +14,7 @@ export type VotingSession = {
   proposicaoObjeto: string;
   uriProposicaoObjeto: string;
   descricao: string;
-  aprovacao: boolean;
+  aprovacao: number;
 };
 
 type Link = {

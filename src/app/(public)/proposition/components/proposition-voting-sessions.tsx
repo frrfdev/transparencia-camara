@@ -1,0 +1,55 @@
+'use client';
+
+import React from 'react';
+import { useGetPropositionVotingSessionsQuery } from '../hooks/api/use-get-proposition-voting-sessions.query';
+import { useParams } from 'next/navigation';
+import { PropositionTab } from './proposition-tab';
+import { PokemonButton } from '@/components/ui/pokemon-button';
+import { CircleCheck, CircleX } from 'lucide-react';
+
+export const PropositionVotingSessions = () => {
+  const params = useParams();
+  const { id } = params;
+
+  const { data: votingSessions, isLoading } =
+    useGetPropositionVotingSessionsQuery({
+      projectId: id as string,
+    });
+
+  console.log(votingSessions);
+
+  if (isLoading) return <div>Loading...</div>;
+
+  if (!votingSessions) return <div>No data</div>;
+
+  return (
+    <PropositionTab className="p-4">
+      <div className="w-1/2 h-full flex flex-col gap-2">
+        {votingSessions.dados.map((votingSession) => (
+          <PokemonButton
+            key={votingSession.id}
+            color={votingSession.aprovacao === 1 ? '#22C55E' : '#F43F5E'}
+            skeletonColor="#f0f0f0"
+            detailRender={(() => {
+              if (isLoading) return <></>;
+              if (votingSession.aprovacao === 1)
+                return (
+                  <span className="text-green-300">
+                    <CircleCheck size={40}></CircleCheck>
+                  </span>
+                );
+              return (
+                <span className="text-red-300">
+                  <CircleX size={40}></CircleX>
+                </span>
+              );
+            })()}
+          >
+            {votingSession.descricao} -{' '}
+            {Intl.DateTimeFormat('pt-BR').format(new Date(votingSession.data))}
+          </PokemonButton>
+        ))}
+      </div>
+    </PropositionTab>
+  );
+};

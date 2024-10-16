@@ -11,7 +11,7 @@ export const propositionMenuButtons = [
   {
     icon: <Vote size={36} />,
     label: 'Votos',
-    value: 'votos',
+    value: 'votes',
   },
   {
     icon: <UsersRound size={32} />,
@@ -34,7 +34,10 @@ export const PropositionMenu = () => {
   return (
     <ScrollMenu>
       {propositionMenuButtons.map((button) => (
-        <ScrollMenuButton key={button.label} icon={button.icon}></ScrollMenuButton>
+        <ScrollMenuButton
+          key={button.label}
+          icon={button.icon}
+        ></ScrollMenuButton>
       ))}
     </ScrollMenu>
   );

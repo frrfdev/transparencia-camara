@@ -8,9 +8,12 @@ type UseGetProjectVotingSessionsQueryProps = {
   projectId: string;
 };
 
-export const useGetProjectVotingSessionsQuery = ({ projectId }: UseGetProjectVotingSessionsQueryProps) => {
+export const useGetPropositionVotingSessionsQuery = ({
+  projectId,
+}: UseGetProjectVotingSessionsQueryProps) => {
   return useQuery({
-    queryKey: ['projectVotingSessions', projectId],
+    queryKey: ['propositionVotingSessions', projectId],
+    staleTime: 1000 * 60,
     queryFn: async () => {
       const response = await api.get<ProjectVotingSessionsResponse>(
         `proposicoes/${projectId}/votacoes?ordem=DESC&ordenarPor=dataHoraRegistro`,

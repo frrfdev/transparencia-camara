@@ -10,13 +10,20 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
 import { PropositionResume } from './proposition-resume';
-import { DetailsGrid, DetailsGridContent, DetailsGridHeader, DetailsGridRow } from '@/components/ui/details-grid';
+import {
+  DetailsGrid,
+  DetailsGridContent,
+  DetailsGridHeader,
+  DetailsGridRow,
+} from '@/components/ui/details-grid';
 
 type PropositionDetailsProps = {
   proposition: Proposition | null;
 };
 
-export const PropositionDetails = ({ proposition }: PropositionDetailsProps) => {
+export const PropositionDetails = ({
+  proposition,
+}: PropositionDetailsProps) => {
   const [isVisible, setIsVisible] = useState(false);
 
   console.log(proposition);
@@ -30,17 +37,21 @@ export const PropositionDetails = ({ proposition }: PropositionDetailsProps) => 
     }
   }, [proposition]);
 
-  const { data: propositionDetails, isPending: isDetailsLoading } = useGetPropositionDetailsQuery({
-    propositionId: proposition?.id ?? 0,
-  });
-  const { data: propositionAuthors, isPending: isAuthorsLoading } = useGetPropositionAuthorsQuery({
-    propositionId: proposition?.id ?? 0,
-  });
+  const { data: propositionDetails, isPending: isDetailsLoading } =
+    useGetPropositionDetailsQuery({
+      propositionId: proposition?.id?.toString() ?? '',
+    });
+  const { data: propositionAuthors, isPending: isAuthorsLoading } =
+    useGetPropositionAuthorsQuery({
+      propositionId: proposition?.id ?? 0,
+    });
   const {
     data: resumeData,
     isPending: isResumeLoading,
     isError,
-  } = useGetPropositionResume(proposition?.id?.toString() ?? '');
+  } = useGetPropositionResume({
+    propositionId: proposition?.id.toString() ?? '',
+  });
 
   const propositionAuthorsWithId = propositionAuthors?.map((author) => {
     const a = author.uri.split('/');
@@ -68,32 +79,59 @@ export const PropositionDetails = ({ proposition }: PropositionDetailsProps) => 
             exit={{ x: '100%' }}
             transition={{ type: 'spring', stiffness: 300, damping: 30 }}
           >
-            <div className="h-full w-full focus:outline-none rounded-lg gap-4 flex flex-col" tabIndex={2}>
+            <div
+              className="h-full w-full focus:outline-none rounded-lg gap-4 flex flex-col"
+              tabIndex={2}
+            >
               <DetailsGridHeader>
                 {propositionDetails?.dataApresentacao
-                  ? Intl.DateTimeFormat('pt-BR').format(new Date(propositionDetails.dataApresentacao))
+                  ? Intl.DateTimeFormat('pt-BR').format(
+                      new Date(propositionDetails.dataApresentacao)
+                    )
                   : ''}
               </DetailsGridHeader>
               <DetailsGrid>
                 <DetailsGridRow
                   label="TIPO"
-                  value={`${propositionDetails?.siglaTipo ?? ''} - ${propositionDetails?.descricaoTipo ?? ''}`}
+                  value={`${propositionDetails?.siglaTipo ?? ''} - ${
+                    propositionDetails?.descricaoTipo ?? ''
+                  }`}
                 />
-                <DetailsGridRow label="NÚMERO" value={propositionDetails?.numero} />
-                <DetailsGridRow label="STATUS" value={propositionDetails?.statusProposicao.descricaoTramitacao} />
-                <DetailsGridRow label="ORGÃO" value={propositionDetails?.statusProposicao.siglaOrgao} />
+                <DetailsGridRow
+                  label="NÚMERO"
+                  value={propositionDetails?.numero}
+                />
+                <DetailsGridRow
+                  label="STATUS"
+                  value={
+                    propositionDetails?.statusProposicao.descricaoTramitacao
+                  }
+                />
+                <DetailsGridRow
+                  label="ORGÃO"
+                  value={propositionDetails?.statusProposicao.siglaOrgao}
+                />
               </DetailsGrid>
 
               <div className=" drop-shadow-md">
-                <div className="bg-gray-300 font-bold text-black w-full p-2 text-center">Autores</div>
+                <div className="bg-gray-300 font-bold text-black w-full p-2 text-center">
+                  Autores
+                </div>
                 <DetailsGridContent>
                   {propositionAuthorsWithId?.map((author) => (
-                    <PersonCard key={author.id} tabIndex={3} personId={author.id} />
+                    <PersonCard
+                      key={author.id}
+                      tabIndex={3}
+                      personId={author.id}
+                    />
                   ))}
                 </DetailsGridContent>
               </div>
 
-              <DetailsGridContent className="relative p-4" tabIndex={4}>
+              <DetailsGridContent
+                className="relative p-4 max-h-[150px]"
+                tabIndex={4}
+              >
                 <div className="absolute top-4 right-4 flex gap-2">
                   {propositionDetails?.urlInteiroTeor && (
                     <Link
@@ -123,10 +161,14 @@ export const PropositionDetails = ({ proposition }: PropositionDetailsProps) => 
                   <p>Erro ao carregar o resumo.</p>
                 ) : resumeData?.resume ? (
                   <div className="">
-                    <p className="text-sm text-gray-500 mb-2">Resumo gerado por IA:</p>
+                    <p className="text-sm text-gray-500 mb-2">
+                      Resumo gerado por IA:
+                    </p>
                     {resumeData.resume.map((item, index) => (
                       <div key={index} className="mb-4">
-                        <h3 className="font-semibold text-lg mb-1">{item.title}</h3>
+                        <h3 className="font-semibold text-lg mb-1">
+                          {item.title}
+                        </h3>
                         <p>{item.description}</p>
                       </div>
                     ))}

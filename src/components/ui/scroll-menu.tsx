@@ -1,7 +1,7 @@
 'use client';
 
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, forwardRef } from 'react';
 import { useMenuStore } from '../../app/(public)/proposition/stores/use-menu-store';
 
 export type ScrollMenuProps = {
@@ -14,9 +14,28 @@ export type ScrollMenuButtonProps = {
   setActive?: () => void;
 };
 
-export const ScrollMenuButton = ({ icon, isActive = false, setActive }: ScrollMenuButtonProps) => {
+export const ScrollMenuButton = forwardRef<
+  HTMLButtonElement,
+  ScrollMenuButtonProps
+>(({ icon, isActive = false, setActive }, ref) => {
+  const buttonRef = useRef<HTMLButtonElement | null>(null);
+
+  useEffect(() => {
+    if (isActive) {
+      buttonRef.current?.focus();
+    }
+  }, [isActive, buttonRef]);
+
   return (
     <button
+      ref={(node) => {
+        buttonRef.current = node;
+        if (typeof ref === 'function') {
+          ref(node);
+        } else if (ref) {
+          ref.current = node;
+        }
+      }}
       data-active={isActive}
       className={`flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 ${
         isActive
@@ -33,7 +52,9 @@ export const ScrollMenuButton = ({ icon, isActive = false, setActive }: ScrollMe
       {icon}
     </button>
   );
-};
+});
+
+ScrollMenuButton.displayName = 'ScrollMenuButton';
 
 export const ScrollMenu = ({ children }: ScrollMenuProps) => {
   const [startIndex, setStartIndex] = useState(0);
@@ -85,7 +106,20 @@ export const ScrollMenu = ({ children }: ScrollMenuProps) => {
   }, [activeIndex]);
 
   return (
-    <div className="relative w-full overflow-hidden">
+    <div
+      className="relative w-full overflow-hidden"
+      onKeyDown={(e) => {
+        if (e.key === 'ArrowRight') {
+          e.preventDefault();
+          e.stopPropagation();
+          handleScroll('right');
+        } else if (e.key === 'ArrowLeft') {
+          e.preventDefault();
+          e.stopPropagation();
+          handleScroll('left');
+        }
+      }}
+    >
       <div className="flex items-center justify-between px-1 sm:px-2 py-1">
         <button onClick={() => handleScroll('left')} className="text-white">
           <ChevronLeft className="w-8 h-8 sm:w-12 sm:h-12 md:w-16 md:h-16" />

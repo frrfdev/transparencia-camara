@@ -2,9 +2,16 @@ import { useQuery } from '@tanstack/react-query';
 import { getPropositionResume } from '../../actions/get-proposition-resume';
 import { PropositionResumeData } from '../../types/PropositionResumeData';
 
-export const useGetPropositionResume = (propositionId: string) => {
+type UseGetPropositionResumeProps = {
+  propositionId: string;
+};
+
+export const useGetPropositionResume = ({
+  propositionId,
+}: UseGetPropositionResumeProps) => {
   return useQuery<PropositionResumeData | null>({
     queryKey: ['propositionResume', propositionId],
     queryFn: () => getPropositionResume(propositionId),
+    enabled: !!propositionId,
   });
 };
