@@ -29,7 +29,7 @@ export const PokemonButton = forwardRef<HTMLButtonElement, PokemonButtonProps>(
 
     const variants = {
       loading: {
-        background: color,
+        background: skeletonColor,
         animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
         width: '100%',
       },
@@ -71,7 +71,7 @@ export const PokemonButton = forwardRef<HTMLButtonElement, PokemonButtonProps>(
       >
         <motion.div
           className="absolute top-0 left-0 w-full h-full flex items-center overflow-hidden"
-          style={{ background: color }}
+          style={{ background: skeletonColor }}
           variants={variants}
           animate={isLoading ? 'loading' : 'loaded'}
           transition={{

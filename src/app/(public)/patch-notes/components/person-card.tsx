@@ -6,12 +6,20 @@ import { GenderIcon } from './gender-icon';
 import { PersonAvatar } from './person-avatar';
 import { PersonCardSkeleton } from './person-card-skeleton';
 import { HTMLMotionProps, motion } from 'framer-motion';
+import { BrazilSvg } from '@/components/icons/brazil.svg';
 
 type PersonCardProps = {
   personId: number;
+  code: number;
+  label: string;
 } & HTMLMotionProps<'div'>;
 
-export const PersonCard = ({ personId, ...props }: PersonCardProps) => {
+export const PersonCard = ({
+  personId,
+  code,
+  label,
+  ...props
+}: PersonCardProps) => {
   const {
     data: personDetails,
     isPending,
@@ -19,6 +27,7 @@ export const PersonCard = ({ personId, ...props }: PersonCardProps) => {
     isError,
   } = useGetPersonDetailsQuery({
     personId: personId.toString(),
+    shouldFetch: true,
   });
 
   if (isLoading || isPending) {
@@ -37,18 +46,32 @@ export const PersonCard = ({ personId, ...props }: PersonCardProps) => {
         avatarUrl={personDetails?.ultimoStatus.urlFoto ?? ''}
         name={personDetails?.ultimoStatus.nome ?? 'Não encontrado'}
       />
+      {code === 30000 ? (
+        <div>
+          <BrazilSvg></BrazilSvg>
+        </div>
+      ) : (
+        <PersonAvatar
+          avatarUrl={personDetails?.ultimoStatus.urlFoto ?? ''}
+          name={personDetails?.ultimoStatus.nome ?? 'Não encontrado'}
+        />
+      )}
       <div className="flex flex-col gap-2 w-full">
         <div className="flex flex-col justify-between h-full">
           <strong className="whitespace-nowrap flex justify-between items-center gap-2">
             <span>
               {personDetails?.ultimoStatus.nome ??
-                (isError
-                  ? 'Solicitação bloqueada pelo governo 😔'
-                  : 'Não encontrado')}
+                (isError ? 'Solicitação bloqueada pelo governo 😔' : label)}
             </span>
-            <GenderIcon gender={personDetails?.sexo ?? ''} />
+            {code === 30000 ? null : (
+              <GenderIcon gender={personDetails?.sexo ?? ''} />
+            )}
           </strong>
-          <PartyLabel party={personDetails?.ultimoStatus.siglaPartido ?? ''} />
+          {code === 30000 ? null : (
+            <PartyLabel
+              party={personDetails?.ultimoStatus.siglaPartido ?? ''}
+            />
+          )}
         </div>
       </div>
     </motion.div>

@@ -136,6 +136,8 @@ export const PropositionDetails = ({
                         key={author.id}
                         tabIndex={0}
                         personId={author.id}
+                        code={author.codTipo}
+                        label={author.nome}
                       />
                     ))
                   ) : (
