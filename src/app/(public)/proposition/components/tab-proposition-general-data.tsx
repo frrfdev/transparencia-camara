@@ -11,12 +11,21 @@ import {
 } from '@/components/ui/details-grid';
 import { DetailsGrid } from '@/components/ui/details-grid';
 import { PropositionText } from './proposition-text';
+import { TabPropositionGeneralDataSkeleton } from './tab-proposition-general-data-skeleton';
 
 export const TabPropositionGeneralData = () => {
   const params = useParams();
-  const { data: propositionDetails } = useGetPropositionDetailsQuery({
+  const {
+    data: propositionDetails,
+    isLoading,
+    isPending,
+  } = useGetPropositionDetailsQuery({
     propositionId: params.id as string,
   });
+
+  if (isLoading || isPending) {
+    return <TabPropositionGeneralDataSkeleton />;
+  }
 
   return (
     <PropositionTab className="w-full flex gap-4 overflow-hidden h-full">
