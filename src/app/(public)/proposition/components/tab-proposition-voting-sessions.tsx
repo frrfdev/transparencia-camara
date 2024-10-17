@@ -26,7 +26,14 @@ export const TabPropositionVotingSessions = () => {
 
   if (isLoading || isPending) return <TabPropositionVotingSessionsSkeleton />;
 
-  if (!votingSessions) return <div>No data</div>;
+  if (!votingSessions?.dados.length)
+    return (
+      <PropositionTab className="p-4 flex gap-4 overflow-hidden h-full">
+        <div className="h-full w-full flex justify-center items-center font-bold uppercase text-gray-800 opacity-50 text-4xl md:text-[10rem] text-center p-6 leading-[100%]">
+          Nenhuma votação
+        </div>
+      </PropositionTab>
+    );
 
   return (
     <PropositionTab className="p-4 flex gap-4 overflow-hidden h-full">
