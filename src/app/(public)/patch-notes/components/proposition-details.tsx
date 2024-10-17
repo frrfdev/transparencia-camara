@@ -133,13 +133,19 @@ export const PropositionDetails = ({
                   Autores
                 </div>
                 <DetailsGridContent>
-                  {propositionAuthorsWithId?.map((author) => (
-                    <PersonCard
-                      key={author.id}
-                      tabIndex={3}
-                      personId={author.id}
-                    />
-                  ))}
+                  {!propositionAuthorsWithId?.length ? (
+                    propositionAuthorsWithId?.map((author) => (
+                      <PersonCard
+                        key={author.id}
+                        tabIndex={3}
+                        personId={author.id}
+                      />
+                    ))
+                  ) : (
+                    <div className="w-full p-6 text-center font-bold text-gray-300">
+                      Nenhum autor encontrado
+                    </div>
+                  )}
                 </DetailsGridContent>
               </div>
 
