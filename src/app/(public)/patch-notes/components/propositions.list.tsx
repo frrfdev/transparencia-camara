@@ -15,6 +15,7 @@ import { InfiniteList } from '@/components/infinite-list';
 import { PropositionButton } from './proposition-button';
 import { Proposition } from '../types/Proposition';
 import { usePropositionListStore } from '../stores/use-proposition-list-store';
+import { motion } from 'framer-motion';
 
 export const PropositionsList = () => {
   const { paginationConfig, dispatchPagination } = usePagination();
@@ -66,6 +67,19 @@ export const PropositionsList = () => {
       removeOption('d');
     };
   }, []);
+
+  if (propositions?.pages.flatMap((page) => page.data).length === 0) {
+    return (
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 0.5 }}
+        transition={{ duration: 0.5 }}
+        className="h-full w-full flex justify-center items-center font-bold uppercase text-gray-800 opacity-50 text-4xl md:text-[10rem] text-center p-6 leading-[100%]"
+      >
+        Nenhuma Proposta
+      </motion.div>
+    );
+  }
 
   return (
     <div className="h-full w-full flex gap-2 pb-4 relative overflow-hidden">
