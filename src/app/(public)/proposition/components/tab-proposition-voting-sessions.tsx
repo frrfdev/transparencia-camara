@@ -8,6 +8,7 @@ import { PokemonButton } from '@/components/ui/pokemon-button';
 import { CircleCheck, CircleX } from 'lucide-react';
 import { useVotingSessionStore } from '../stores/use-voting-session-store';
 import { VotingSessionVotes } from './voting-session-votes';
+import { TabPropositionVotingSessionsSkeleton } from './tab-proposition-voting-sessions-skeleton';
 
 export const TabPropositionVotingSessions = () => {
   const params = useParams();
@@ -15,12 +16,15 @@ export const TabPropositionVotingSessions = () => {
   const { selectedVotingSession, setSelectedVotingSession } =
     useVotingSessionStore();
 
-  const { data: votingSessions, isLoading } =
-    useGetPropositionVotingSessionsQuery({
-      projectId: id as string,
-    });
+  const {
+    data: votingSessions,
+    isLoading,
+    isPending,
+  } = useGetPropositionVotingSessionsQuery({
+    projectId: id as string,
+  });
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading || isPending) return <TabPropositionVotingSessionsSkeleton />;
 
   if (!votingSessions) return <div>No data</div>;
 

@@ -3,17 +3,22 @@ import { useGetVotingSessionVotesQuery } from '../hooks/api/use-get-voting-sessi
 import { DetailsGridContent } from '@/components/ui/details-grid';
 import { VotingSessionChart } from '../../votes/components/voting-session-chart';
 import { VotingSessionPartyChart } from '../../votes/components/voting-session-party-chart';
+import { VotingSessionVotesSkeleton } from './voting-session-votes-skeleton';
 
 type Props = {
   votingSessionId: string;
 };
 
 export const VotingSessionVotes = ({ votingSessionId }: Props) => {
-  const { data: votes, isLoading } = useGetVotingSessionVotesQuery({
+  const {
+    data: votes,
+    isLoading,
+    isPending,
+  } = useGetVotingSessionVotesQuery({
     votingSessionId,
   });
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading || isPending) return <VotingSessionVotesSkeleton />;
 
   return (
     <DetailsGridContent
