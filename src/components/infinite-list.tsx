@@ -42,7 +42,7 @@ export const InfiniteList = ({
       <div className="relative flex flex-col">
         {children}
         <div
-          className="h-[10px] bg-red-500 absolute w-full bottom-[50px]"
+          className="h-[10px] absolute w-full bottom-[50px]"
           ref={loadMoreRef}
         ></div>
       </div>
