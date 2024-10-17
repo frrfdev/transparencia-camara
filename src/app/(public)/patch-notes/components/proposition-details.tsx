@@ -6,7 +6,6 @@ import { useGetPropositionResume } from '../hooks/api/use-get-proposition-resume
 import { motion, AnimatePresence } from 'framer-motion';
 import { useEffect, useMemo, useState } from 'react';
 import { PropositionDetailsSkeleton } from './proposition-details.skeleton';
-import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
 import { PropositionResume } from './proposition-resume';
@@ -19,6 +18,7 @@ import {
 import { NovoIcon } from '@/components/icons/novo.svg';
 import { CidadaniaIcon } from '@/components/icons/cidadania.svg';
 import { MdbIcon } from '@/components/icons/mdb.svg';
+import { Link } from '@/components/ui/link';
 
 type PropositionDetailsProps = {
   proposition: Proposition | null;
@@ -29,11 +29,8 @@ export const PropositionDetails = ({
 }: PropositionDetailsProps) => {
   const [isVisible, setIsVisible] = useState(false);
 
-  console.log(proposition);
-
   useEffect(() => {
     if (proposition) {
-      console.log('show');
       setIsVisible(true);
     } else {
       setIsVisible(false);
@@ -84,7 +81,7 @@ export const PropositionDetails = ({
           >
             <div
               className="h-full w-full focus:outline-none rounded-lg gap-4 flex flex-col"
-              tabIndex={2}
+              tabIndex={0}
             >
               <DetailsGridHeader>
                 {propositionDetails?.dataApresentacao
@@ -133,11 +130,11 @@ export const PropositionDetails = ({
                   Autores
                 </div>
                 <DetailsGridContent>
-                  {!propositionAuthorsWithId?.length ? (
+                  {propositionAuthorsWithId?.length ? (
                     propositionAuthorsWithId?.map((author) => (
                       <PersonCard
                         key={author.id}
-                        tabIndex={3}
+                        tabIndex={0}
                         personId={author.id}
                       />
                     ))
@@ -149,14 +146,16 @@ export const PropositionDetails = ({
                 </DetailsGridContent>
               </div>
 
-              <DetailsGridContent className="relative p-4 h-full" tabIndex={4}>
+              <DetailsGridContent className="relative p-4 h-full" tabIndex={0}>
                 <div className="absolute top-4 right-4 flex gap-2">
                   {propositionDetails?.urlInteiroTeor && (
                     <Link
                       href={propositionDetails.urlInteiroTeor}
                       target="_blank"
+                      variant="pokemon"
+                      tabIndex={0}
                       rel="noopener noreferrer"
-                      className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded transition duration-300 text-sm"
+                      className="bg-purple-500 hover:bg-purple-600 focus:bg-black text-white font-bold py-2 px-4 transition duration-300 text-sm"
                     >
                       Ver Projeto na Íntegra
                     </Link>
@@ -164,9 +163,14 @@ export const PropositionDetails = ({
                   {resumeData?.resume && (
                     <Dialog>
                       <DialogTrigger asChild>
-                        <Button variant="outline">Ver Resumo Completo</Button>
+                        <Button
+                          variant="pokemon"
+                          className="shadow-soft bg-yellow-500 hover:bg-yellow-600 focus:bg-black text-white"
+                        >
+                          Ver Resumo Completo
+                        </Button>
                       </DialogTrigger>
-                      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+                      <DialogContent className="max-w-4xl  max-h-[90vh] overflow-y-auto">
                         <PropositionResume resumeData={resumeData} />
                       </DialogContent>
                     </Dialog>

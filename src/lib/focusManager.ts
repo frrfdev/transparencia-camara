@@ -13,12 +13,9 @@ export function resetState() {
 /* istanbul ignore next */
 export function log() {
   if (process.env.NODE_ENV !== 'production') {
-    console.log('focusManager ----------');
     focusLaterElements.forEach((f) => {
       const check = f || ({} as Element);
-      console.log(check.nodeName, check.className, check.id);
     });
-    console.log('end focusManager ----------');
   }
 }
 /* eslint-enable no-console */

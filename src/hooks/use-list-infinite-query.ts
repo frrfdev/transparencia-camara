@@ -28,35 +28,44 @@ export const useListInfiniteQuery = <T>(
 ) => {
   return useInfiniteQuery<PaginatedRequest<T>>({
     ...queryOptions,
-    queryKey: [...queryKey],
+    queryKey,
     initialPageParam: 1,
     queryFn: async ({ pageParam = 1 }) => {
-      delete params?.pageSize;
-      delete params?.current;
-      delete params?.total;
-      delete params?.lastPage;
+      const { filter, _current, _total, _lastPage, ...restParams } =
+        params || {};
 
       const response = await api.get<PaginatedRequestApi<T>>(url, {
         params: {
-          ...(params || {}),
+          ...(restParams || {}),
           pagina: (pageParam as number).toString(),
           itens: params?.pageSize || 10,
-          ...params?.filter,
+          ...filter,
         },
       });
 
-      const parsedResponseData = ApiResponseConverter.paginatedRequest(
-        response.data
-      );
+      try {
+        const parsedResponseData = ApiResponseConverter.paginatedRequest(
+          response.data
+        );
 
-      dispatchPagination({
-        type: 'SET_LAST_PAGE',
-        payload: parsedResponseData.lastPage,
-      });
+        dispatchPagination({
+          type: 'SET_LAST_PAGE',
+          payload: parsedResponseData.lastPage,
+        });
 
-      return {
-        ...parsedResponseData,
-      };
+        return {
+          ...parsedResponseData,
+        };
+      } catch (err) {
+        return {
+          data: [],
+          page: 1,
+          pageSize: 0,
+          search: '',
+          total: 0,
+          lastPage: 1,
+        };
+      }
     },
     getNextPageParam: ({ lastPage, page }) => {
       return page < lastPage ? page + 1 : undefined;

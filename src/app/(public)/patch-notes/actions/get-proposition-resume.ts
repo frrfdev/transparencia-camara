@@ -5,8 +5,6 @@ import { PropositionResumeData } from '../types/PropositionResumeData';
 
 export async function getPropositionResume(propositionId: string) {
   const uri = process.env.MONGODB_URI;
-  console.log('aaaa');
-  console.log(uri, 'uri');
 
   if (!uri) {
     throw new Error('MongoDB URI is not defined in the environment variables');
@@ -22,8 +20,6 @@ export async function getPropositionResume(propositionId: string) {
     const resume = await resumes.findOne({
       proposition_number: Number(propositionId),
     });
-
-    console.log(resume, 'resume');
 
     if (!resume) {
       return null;

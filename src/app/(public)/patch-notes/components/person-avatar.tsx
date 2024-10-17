@@ -28,6 +28,8 @@ export const PersonAvatar = ({
             : avatarUrl ?? ''
         }
         alt={name ?? ''}
+        placeholder="blur"
+        blurDataURL={'/assets/images/placeholder/image-not-found.webp'}
         fill
         objectFit="cover"
         className="absolute w-full"

@@ -14,7 +14,6 @@ export const InputSound = ({ children, disabled }: Props) => {
           if (!disabled) {
             const focusAudio = new Audio('/assets/audio/focus.wav');
             focusAudio.volume = 0.1;
-            console.log('bbbb');
             focusAudio.play();
           }
           (child as React.ReactElement)?.props?.onFocus?.(e);

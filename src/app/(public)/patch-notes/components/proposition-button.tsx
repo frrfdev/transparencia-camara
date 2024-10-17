@@ -36,7 +36,6 @@ export const PropositionButton = ({
     if (buttonRef.current) {
       if (selectedPropositionId === proposition.id) {
         setTimeout(() => {
-          console.log(document.activeElement);
           if (buttonRef.current !== document.activeElement) {
             buttonRef.current?.focus();
           }

@@ -57,8 +57,6 @@ export const usePaginatedQuery = <T>(props: Props<T>) => {
         payload: convertedResponse.lastPage,
       });
 
-      console.log(convertedResponse);
-
       return convertedResponse;
     },
   });

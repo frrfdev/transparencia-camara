@@ -1,41 +1,56 @@
 'use client';
 
-import Image from 'next/image';
 import { useGetPersonDetailsQuery } from '../hooks/api/use-get-person-details.query';
-import { MaleSvg } from '@/components/icons/male.svg';
-import { FemaleSvg } from '@/components/icons/female.svg';
-import { PartyIcon } from './party-icon';
-import { PartyUtils } from '../../votes/utils/party';
 import { PartyLabel } from './party-label';
 import { GenderIcon } from './gender-icon';
 import { PersonAvatar } from './person-avatar';
+import { PersonCardSkeleton } from './person-card-skeleton';
+import { HTMLMotionProps, motion } from 'framer-motion';
 
 type PersonCardProps = {
   personId: number;
-} & React.HTMLAttributes<HTMLDivElement>;
+} & HTMLMotionProps<'div'>;
 
 export const PersonCard = ({ personId, ...props }: PersonCardProps) => {
-  const { data: personDetails } = useGetPersonDetailsQuery({
+  const {
+    data: personDetails,
+    isPending,
+    isLoading,
+    isError,
+  } = useGetPersonDetailsQuery({
     personId: personId.toString(),
   });
+
+  if (isLoading || isPending) {
+    return <PersonCardSkeleton />;
+  }
+
   return (
-    <div
-      className="flex gap-2 bg-white border-b-2 w-full border-neutral-200 px-4 py-4 pr-8 focus:bg-neutral-950 focus:text-white focus:outline-none"
+    <motion.div
       {...props}
+      className="flex gap-2 bg-white border-b-2 w-full border-neutral-200 px-4 py-4 pr-8 focus:bg-neutral-950 focus:text-white focus:outline-none"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
     >
       <PersonAvatar
         avatarUrl={personDetails?.ultimoStatus.urlFoto ?? ''}
-        name={personDetails?.ultimoStatus.nome ?? ''}
-      ></PersonAvatar>
+        name={personDetails?.ultimoStatus.nome ?? 'Não encontrado'}
+      />
       <div className="flex flex-col gap-2 w-full">
         <div className="flex flex-col justify-between h-full">
           <strong className="whitespace-nowrap flex justify-between items-center gap-2">
-            <span>{personDetails?.ultimoStatus.nome}</span>
+            <span>
+              {personDetails?.ultimoStatus.nome ??
+                (isError
+                  ? 'Solicitação bloqueada pelo governo 😔'
+                  : 'Não encontrado')}
+            </span>
             <GenderIcon gender={personDetails?.sexo ?? ''} />
           </strong>
           <PartyLabel party={personDetails?.ultimoStatus.siglaPartido ?? ''} />
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };

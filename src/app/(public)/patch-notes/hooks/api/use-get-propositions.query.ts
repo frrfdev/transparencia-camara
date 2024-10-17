@@ -1,6 +1,9 @@
 import { PaginatedQueryParams } from '@/hooks/use-paginated-query';
 import { Proposition } from '../../types/Proposition';
-import { ListInfiniteQueryParams, useListInfiniteQuery } from '@/hooks/use-list-infinite-query';
+import {
+  ListInfiniteQueryParams,
+  useListInfiniteQuery,
+} from '@/hooks/use-list-infinite-query';
 import { DispatchPagination } from '@/hooks/use-pagination';
 
 export type GetPropositionsParams = ListInfiniteQueryParams & {
@@ -44,12 +47,20 @@ export type GetPropositionsParams = ListInfiniteQueryParams & {
   dispatchPagination: DispatchPagination;
 };
 
-export const useGetPropositionsQuery = ({ dispatchPagination, ...params }: GetPropositionsParams) => {
+export const useGetPropositionsQuery = ({
+  dispatchPagination,
+  ...params
+}: GetPropositionsParams) => {
   return useListInfiniteQuery<Proposition>(
     'proposicoes?ordem=DESC&ordenarPor=id',
     {
-      queryKey: ['proposicoes', params.pageSize, params.sort, JSON.stringify(params.filter)],
-      staleTime: 2000,
+      queryKey: [
+        'proposicoes',
+        params.pageSize,
+        params.sort,
+        JSON.stringify(params.filter),
+      ],
+      staleTime: 1000 * 60,
       dispatchPagination,
     },
     {
