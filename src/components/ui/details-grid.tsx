@@ -3,7 +3,7 @@ import React from 'react';
 
 export type DetailsGridRowProps = {
   label: string;
-  value?: string | number;
+  value?: string | number | React.ReactNode;
 };
 
 export const DetailsGridRow = ({ label, value }: DetailsGridRowProps) => {

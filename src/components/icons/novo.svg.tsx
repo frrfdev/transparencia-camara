@@ -12,11 +12,6 @@ export const NovoIcon = (props: React.SVGProps<SVGSVGElement>) => (
     viewBox="0 0 540 540"
     {...props}
   >
-    <clipPath id="a">
-      <path d="M0 17.348h540v505.305H0z" />
-    </clipPath>
-    <g clipPath="url(#a)">
-      <path d="M540 17.348v468.901l-218.63 36.403V53.751L540 17.348ZM218.63 17.348v468.901L0 522.652V53.751l218.63-36.403Z" />
-    </g>
+    <path d="M540 17.348v468.901l-218.63 36.403V53.751L540 17.348ZM218.63 17.348v468.901L0 522.652V53.751l218.63-36.403Z" />
   </svg>
 );

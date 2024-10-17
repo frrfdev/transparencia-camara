@@ -9,7 +9,7 @@ import { CircleCheck, CircleX } from 'lucide-react';
 import { useVotingSessionStore } from '../stores/use-voting-session-store';
 import { VotingSessionVotes } from './voting-session-votes';
 
-export const PropositionVotingSessions = () => {
+export const TabPropositionVotingSessions = () => {
   const params = useParams();
   const { id } = params;
   const { selectedVotingSession, setSelectedVotingSession } =

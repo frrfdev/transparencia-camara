@@ -16,6 +16,9 @@ import {
   DetailsGridHeader,
   DetailsGridRow,
 } from '@/components/ui/details-grid';
+import { NovoIcon } from '@/components/icons/novo.svg';
+import { CidadaniaIcon } from '@/components/icons/cidadania.svg';
+import { MdbIcon } from '@/components/icons/mdb.svg';
 
 type PropositionDetailsProps = {
   proposition: Proposition | null;
@@ -43,7 +46,7 @@ export const PropositionDetails = ({
     });
   const { data: propositionAuthors, isPending: isAuthorsLoading } =
     useGetPropositionAuthorsQuery({
-      propositionId: proposition?.id ?? 0,
+      propositionId: proposition?.id?.toString() ?? '',
     });
   const {
     data: resumeData,
@@ -56,8 +59,8 @@ export const PropositionDetails = ({
   const propositionAuthorsWithId = propositionAuthors?.map((author) => {
     const a = author.uri.split('/');
     return {
-      id: Number(a[a.length - 1]),
       ...author,
+      id: Number(a[a.length - 1]),
     };
   });
 
@@ -88,7 +91,19 @@ export const PropositionDetails = ({
                   ? Intl.DateTimeFormat('pt-BR').format(
                       new Date(propositionDetails.dataApresentacao)
                     )
-                  : ''}
+                  : ''}{' '}
+                -{' '}
+                <span
+                  title="Copiar ID"
+                  className="cursor-pointer hover:text-white"
+                  onClick={() => {
+                    navigator.clipboard.writeText(
+                      propositionDetails?.id.toString() ?? ''
+                    );
+                  }}
+                >
+                  {propositionDetails?.id ?? ''}
+                </span>
               </DetailsGridHeader>
               <DetailsGrid>
                 <DetailsGridRow
@@ -128,10 +143,7 @@ export const PropositionDetails = ({
                 </DetailsGridContent>
               </div>
 
-              <DetailsGridContent
-                className="relative p-4 max-h-[150px]"
-                tabIndex={4}
-              >
+              <DetailsGridContent className="relative p-4 h-full" tabIndex={4}>
                 <div className="absolute top-4 right-4 flex gap-2">
                   {propositionDetails?.urlInteiroTeor && (
                     <Link

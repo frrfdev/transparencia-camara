@@ -1,20 +1,24 @@
 'use client';
 
 import React from 'react';
-import { PropositionGeneralData } from './proposition-general-data';
+import { TabPropositionGeneralData } from './tab-proposition-general-data';
 import { useMenuStore } from '../stores/use-menu-store';
 import { propositionMenuButtons } from './proposition-menu';
-import { PropositionVotingSessions } from './proposition-voting-sessions';
+import { TabPropositionVotingSessions } from './tab-proposition-voting-sessions';
+import { TabPropositionAuthors } from './tab-proposition-authors';
 
 export const PropositionTabs = () => {
   const activeIndex = useMenuStore((state) => state.activeIndex);
   return (
     <div className="w-full h-full">
       {propositionMenuButtons[activeIndex].value === 'general' ? (
-        <PropositionGeneralData></PropositionGeneralData>
+        <TabPropositionGeneralData></TabPropositionGeneralData>
       ) : null}
       {propositionMenuButtons[activeIndex].value === 'votes' ? (
-        <PropositionVotingSessions />
+        <TabPropositionVotingSessions />
+      ) : null}
+      {propositionMenuButtons[activeIndex].value === 'authors' ? (
+        <TabPropositionAuthors />
       ) : null}
     </div>
   );

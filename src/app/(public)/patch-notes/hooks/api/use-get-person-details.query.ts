@@ -3,15 +3,19 @@ import { useQuery } from '@tanstack/react-query';
 import { PersonDetailsResponseApi } from '../../types/PersonDetailsResponse';
 
 type PersonDetailsQueryProps = {
-  personId: number;
+  personId: string;
 };
 
-export const useGetPersonDetailsQuery = ({ personId }: PersonDetailsQueryProps) => {
+export const useGetPersonDetailsQuery = ({
+  personId,
+}: PersonDetailsQueryProps) => {
   return useQuery({
     queryKey: ['person-details', personId],
     staleTime: 1000 * 60 * 60 * 24,
     queryFn: async () => {
-      const response = await api.get<PersonDetailsResponseApi>(`/deputados/${personId}`);
+      const response = await api.get<PersonDetailsResponseApi>(
+        `/deputados/${personId}`
+      );
       return response.data.dados;
     },
   });

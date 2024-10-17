@@ -5,4 +5,5 @@ export type PropositionAuthorApi = {
   tipo: string;
   ordemAssinatura: number;
   proponente: number;
+  id: string;
 };

@@ -6,12 +6,13 @@ import { useGetPropositionDetailsQuery } from '../../patch-notes/hooks/api/use-g
 import { useParams } from 'next/navigation';
 import {
   DetailsGridContent,
+  DetailsGridHeader,
   DetailsGridRow,
 } from '@/components/ui/details-grid';
 import { DetailsGrid } from '@/components/ui/details-grid';
 import { PropositionText } from './proposition-text';
 
-export const PropositionGeneralData = () => {
+export const TabPropositionGeneralData = () => {
   const params = useParams();
   const { data: propositionDetails } = useGetPropositionDetailsQuery({
     propositionId: params.id as string,
@@ -37,9 +38,12 @@ export const PropositionGeneralData = () => {
             value={propositionDetails?.statusProposicao.siglaOrgao}
           />
         </DetailsGrid>
-        <DetailsGridContent className="p-4 w-full drop-shadow-md">
-          {propositionDetails?.ementa}
-        </DetailsGridContent>
+        <div>
+          <DetailsGridHeader>EMENTA</DetailsGridHeader>
+          <DetailsGridContent className="p-4 w-full drop-shadow-md">
+            {propositionDetails?.ementa}
+          </DetailsGridContent>
+        </div>
       </div>
       <div className="w-1/2  overflow-hidden h-full p-4">
         <PropositionText />

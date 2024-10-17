@@ -46,8 +46,6 @@ export const VotingSessionPartyChart = ({
   className,
   onBarClick,
 }: Props) => {
-  // first we nee to create a division by the deputado_.siglaPartido
-  // and then separate in two values, yes and no, so i can make a chart, there is one more value "Obstrução"
   const votesByParty = votes.reduce((acc, vote) => {
     const party = vote.deputado_.siglaPartido;
     if (!acc.find((p) => p.party === party)) {

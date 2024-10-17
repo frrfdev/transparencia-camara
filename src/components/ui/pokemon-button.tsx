@@ -63,7 +63,7 @@ export const PokemonButton = forwardRef<HTMLButtonElement, PokemonButtonProps>(
           }
         }}
         className={cn(
-          'font-medium w-full relative overflow-hidden flex h-[80px] items-center rounded-full bg-white shadow-[rgba(17,_17,_26,_0.1)_0px_0px_16px] hover:bg-purple-200 transition-all pr-4',
+          'font-medium w-full group/button relative overflow-hidden flex h-[80px] items-center rounded-full bg-white shadow-[rgba(17,_17,_26,_0.1)_0px_0px_16px] hover:bg-purple-200 transition-all pr-4',
           'focus:bg-gradient-to-r from-neutral-950 to-neutral-900 focus:text-white focus:font-bold',
           'data-[selected=true]:bg-gradient-to-r data-[selected=true]:from-neutral-950 data-[selected=true]:to-neutral-900 data-[selected=true]:text-white data-[selected=true]:font-bold'
         )}

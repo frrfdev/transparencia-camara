@@ -6,6 +6,9 @@ const nextConfig = {
       {
         hostname: 'www.camara.leg.br',
       },
+      {
+        hostname: 'upload.wikimedia.org',
+      },
     ],
   },
 };

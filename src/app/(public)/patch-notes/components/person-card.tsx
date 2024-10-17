@@ -15,7 +15,9 @@ type PersonCardProps = {
 } & React.HTMLAttributes<HTMLDivElement>;
 
 export const PersonCard = ({ personId, ...props }: PersonCardProps) => {
-  const { data: personDetails } = useGetPersonDetailsQuery({ personId });
+  const { data: personDetails } = useGetPersonDetailsQuery({
+    personId: personId.toString(),
+  });
   return (
     <div
       className="flex gap-2 bg-white border-b-2 w-full border-neutral-200 px-4 py-4 pr-8 focus:bg-neutral-950 focus:text-white focus:outline-none"
