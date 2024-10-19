@@ -14,8 +14,9 @@ type Props = {
 };
 
 export const PersonDetails = ({ personId }: Props) => {
-  const { data: personDetails, isPending } = useGetPersonDetailsQuery({
+  const { data: personDetails } = useGetPersonDetailsQuery({
     personId,
+    shouldFetch: !!personId,
   });
 
   return (
