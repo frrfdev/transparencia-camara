@@ -7,7 +7,10 @@ interface PropositionTabProps {
   className?: string;
 }
 
-export const PropositionTab: React.FC<PropositionTabProps> = ({ children, className }) => {
+export const PropositionTab: React.FC<PropositionTabProps> = ({
+  children,
+  className,
+}) => {
   return (
     <AnimatePresence mode="wait">
       <motion.div

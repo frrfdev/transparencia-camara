@@ -62,8 +62,9 @@ export const TabPropositionVotingSessions = () => {
               );
             })()}
           >
-            {votingSession.descricao} -{' '}
-            {Intl.DateTimeFormat('pt-BR').format(new Date(votingSession.data))}
+            <span className="line-clamp-2 w-full text-center">
+              {votingSession.descricao}
+            </span>
           </PokemonButton>
         ))}
       </div>

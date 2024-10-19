@@ -6,7 +6,17 @@ import {
   ChartTooltipContent,
   type ChartConfig,
 } from '@/components/ui/chart';
-import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from 'recharts';
+import {
+  Bar,
+  BarChart,
+  CartesianGrid,
+  Radar,
+  PolarAngleAxis,
+  PolarGrid,
+  RadarChart,
+  XAxis,
+  YAxis,
+} from 'recharts';
 import { cn } from '@/lib/utils';
 import { ColorUtils } from '../utils/colors';
 import { PartyVotes } from '../../../../types/PartyVotes';
@@ -39,12 +49,14 @@ type Props = {
   votes: Vote[];
   className?: string;
   onBarClick?: (barKey: string, data: PartyVotes) => void;
+  type?: 'bar' | 'radar';
 };
 
 export const VotingSessionPartyChart = ({
   votes,
   className,
   onBarClick,
+  type = 'bar',
 }: Props) => {
   const votesByParty = votes.reduce((acc, vote) => {
     const party = vote.deputado_.siglaPartido;
@@ -74,6 +86,66 @@ export const VotingSessionPartyChart = ({
     }
     return acc;
   }, [] as { party: string; yes: number; no: number; obstruction: number; abstention: number; article17: number }[]);
+
+  if (type === 'radar') {
+    return (
+      <ChartContainer config={chartConfig} className=" min-h-1">
+        <RadarChart data={votesByParty}>
+          <ChartTooltip
+            cursor={false}
+            content={<ChartTooltipContent indicator="line" />}
+          />
+          <PolarAngleAxis
+            dataKey="party"
+            tick={({ x, y, textAnchor, index, ...props }) => {
+              const data = votesByParty[index];
+              return (
+                <text
+                  x={x}
+                  y={index === 0 ? y - 10 : y}
+                  textAnchor={textAnchor}
+                  fontSize={13}
+                  fontWeight={500}
+                  {...props}
+                >
+                  <tspan className="fill-green-500">{data.yes}</tspan>
+                  <tspan className="fill-muted-foreground">/</tspan>
+                  <tspan className="fill-red-500">{data.no}</tspan>
+                  <tspan
+                    x={x}
+                    dy={'1rem'}
+                    fontSize={12}
+                    className="fill-muted-foreground"
+                  >
+                    {data.party.slice(0, 3)}
+                  </tspan>
+                </text>
+              );
+            }}
+          />
+          <PolarGrid className="fill-gray-900/10 " />
+          <Radar
+            dataKey="no"
+            className="fill-red-500"
+            fillOpacity={0.6}
+            dot={{
+              r: 4,
+              fillOpacity: 1,
+            }}
+          />
+          <Radar
+            dataKey="yes"
+            className="fill-green-500"
+            fillOpacity={0.6}
+            dot={{
+              r: 4,
+              fillOpacity: 1,
+            }}
+          />
+        </RadarChart>
+      </ChartContainer>
+    );
+  }
 
   return (
     <ChartContainer

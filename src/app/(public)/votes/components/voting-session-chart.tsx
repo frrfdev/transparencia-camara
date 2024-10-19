@@ -1,7 +1,21 @@
 import React from 'react';
 import { Vote } from '../../../../types/GetVotingSessionVotesResponse';
-import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from '@/components/ui/chart';
-import { LabelList, Pie, PieChart } from 'recharts';
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+  type ChartConfig,
+} from '@/components/ui/chart';
+import {
+  Label,
+  LabelList,
+  Pie,
+  PieChart,
+  PolarGrid,
+  PolarRadiusAxis,
+  RadialBar,
+  RadialBarChart,
+} from 'recharts';
 import { cn } from '@/lib/utils';
 import { ColorUtils } from '../utils/colors';
 import { PartyVotes } from '../../../../types/PartyVotes';
@@ -12,7 +26,7 @@ const chartConfig = {
   },
   yes: {
     label: 'Sim',
-    color: 'var(--color-yes)',
+    color: '#22C55E',
   },
   no: {
     label: 'Não',
@@ -36,6 +50,7 @@ type Props = {
   votes: Vote[];
   className?: string;
   onBarClick?: (barKey: string, data: PartyVotes) => void;
+  type?: 'pie' | 'radial' | 'donut';
 };
 
 const parseVoteType = (voteType: string) => {
@@ -46,7 +61,11 @@ const parseVoteType = (voteType: string) => {
   return 'obstruction';
 };
 
-export const VotingSessionChart = ({ votes, className }: Props) => {
+export const VotingSessionChart = ({
+  votes,
+  className,
+  type = 'pie',
+}: Props) => {
   const votesByType = votes.reduce((acc, vote) => {
     const type = vote.tipoVoto;
     if (!acc.find((t) => t.type === type)) {
@@ -62,10 +81,128 @@ export const VotingSessionChart = ({ votes, className }: Props) => {
     return acc;
   }, [] as { type: string; count: number; fill: string }[]);
 
+  if (type === 'donut') {
+    return (
+      <ChartContainer config={chartConfig} className="mx-auto min-h-1 w-full">
+        <PieChart>
+          <ChartTooltip
+            cursor={false}
+            content={<ChartTooltipContent hideLabel />}
+          />
+          <Pie
+            data={votesByType}
+            dataKey="count"
+            nameKey="type"
+            innerRadius={60}
+            strokeWidth={5}
+          >
+            <Label
+              content={({ viewBox }) => {
+                if (viewBox && 'cx' in viewBox && 'cy' in viewBox) {
+                  return (
+                    <text
+                      x={viewBox.cx}
+                      y={viewBox.cy}
+                      textAnchor="middle"
+                      dominantBaseline="middle"
+                    >
+                      <tspan
+                        x={viewBox.cx}
+                        y={viewBox.cy}
+                        className="fill-foreground text-3xl font-bold"
+                      >
+                        {votesByType.reduce((acc, vote) => {
+                          return acc + vote.count;
+                        }, 0)}
+                      </tspan>
+                      <tspan
+                        x={viewBox.cx}
+                        y={(viewBox.cy || 0) + 24}
+                        className="fill-muted-foreground"
+                      >
+                        Votos
+                      </tspan>
+                    </text>
+                  );
+                }
+              }}
+            />
+          </Pie>
+        </PieChart>
+      </ChartContainer>
+    );
+  }
+
+  if (type === 'radial') {
+    // convert to {yes: 0, no: 0, ...} use the key not the type
+    const convertedData = Object.fromEntries(
+      votesByType.map((vote) => [parseVoteType(vote.type), vote.count])
+    );
+
+    return (
+      <ChartContainer
+        config={chartConfig}
+        className="mx-auto min-h-[300px] w-full"
+      >
+        <RadialBarChart
+          data={[convertedData]}
+          endAngle={100}
+          innerRadius={80}
+          outerRadius={140}
+        >
+          <PolarGrid
+            gridType="circle"
+            radialLines={false}
+            stroke="none"
+            className="first:fill-muted last:fill-background"
+            polarRadius={[86, 74]}
+          />
+          <RadialBar dataKey="yes" fill="var(--color-yes)" />
+          <PolarRadiusAxis tick={false} tickLine={false} axisLine={false}>
+            <Label
+              content={({ viewBox }) => {
+                if (viewBox && 'cx' in viewBox && 'cy' in viewBox) {
+                  return (
+                    <text
+                      x={viewBox.cx}
+                      y={viewBox.cy}
+                      textAnchor="middle"
+                      dominantBaseline="middle"
+                    >
+                      <tspan
+                        x={viewBox.cx}
+                        y={viewBox.cy}
+                        className="fill-foreground text-4xl font-bold"
+                      >
+                        {votesByType[0].count.toLocaleString()}
+                      </tspan>
+                      <tspan
+                        x={viewBox.cx}
+                        y={(viewBox.cy || 0) + 24}
+                        className="fill-muted-foreground"
+                      >
+                        Visitors
+                      </tspan>
+                    </text>
+                  );
+                }
+              }}
+            />
+          </PolarRadiusAxis>
+        </RadialBarChart>
+      </ChartContainer>
+    );
+  }
+
   return (
-    <ChartContainer config={chartConfig} className={cn('min-h-[200px] w-full', className)}>
+    <ChartContainer
+      config={chartConfig}
+      className={cn('min-h-[200px] w-full', className)}
+    >
       <PieChart data={votesByType}>
-        <ChartTooltip content={<ChartTooltipContent nameKey="count" hideLabel />} />
+        <ChartTooltip
+          content={<ChartTooltipContent nameKey="count" hideLabel />}
+        />
         <Pie data={votesByType} dataKey="count">
           <LabelList
             dataKey="type"

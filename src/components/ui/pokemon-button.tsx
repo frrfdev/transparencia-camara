@@ -1,6 +1,6 @@
 import React, { forwardRef, useEffect, useRef } from 'react';
 import { ButtonProps } from './button';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
 
 export type PokemonButtonProps = {
@@ -9,6 +9,7 @@ export type PokemonButtonProps = {
   detailRender?: React.ReactNode;
   color?: string;
   skeletonColor?: string;
+  hasLoaded?: boolean;
 } & ButtonProps;
 
 export const PokemonButton = forwardRef<HTMLButtonElement, PokemonButtonProps>(
@@ -21,6 +22,7 @@ export const PokemonButton = forwardRef<HTMLButtonElement, PokemonButtonProps>(
       color = '#9333ea',
       skeletonColor = '#9333ea',
       onFocus,
+      hasLoaded = false,
       ...props
     },
     ref
@@ -30,13 +32,13 @@ export const PokemonButton = forwardRef<HTMLButtonElement, PokemonButtonProps>(
     const variants = {
       loading: {
         background: skeletonColor,
-        animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
         width: '100%',
       },
       loaded: {
         background: 'transparent',
         animation: 'none',
         width: 0,
+        transition: { duration: 0.2 },
       },
     };
 

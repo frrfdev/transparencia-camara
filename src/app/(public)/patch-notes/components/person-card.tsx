@@ -42,10 +42,6 @@ export const PersonCard = ({
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
     >
-      <PersonAvatar
-        avatarUrl={personDetails?.ultimoStatus.urlFoto ?? ''}
-        name={personDetails?.ultimoStatus.nome ?? 'Não encontrado'}
-      />
       {code === 30000 ? (
         <div>
           <BrazilSvg></BrazilSvg>
