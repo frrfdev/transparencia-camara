@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { useGetPropositionVotingSessionsQuery } from '../hooks/api/use-get-proposition-voting-sessions.query';
+import { useGetPropositionVotingSessionsQuery } from '../../../../hooks/api/use-get-proposition-voting-sessions.query';
 import { useParams } from 'next/navigation';
 import { PropositionTab } from './proposition-tab';
 import { PokemonButton } from '@/components/ui/pokemon-button';

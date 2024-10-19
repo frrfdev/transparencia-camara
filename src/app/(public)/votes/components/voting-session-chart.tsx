@@ -2,6 +2,8 @@ import React from 'react';
 import { Vote } from '../../../../types/GetVotingSessionVotesResponse';
 import {
   ChartContainer,
+  ChartLegend,
+  ChartLegendContent,
   ChartTooltip,
   ChartTooltipContent,
   type ChartConfig,
@@ -15,10 +17,12 @@ import {
   PolarRadiusAxis,
   RadialBar,
   RadialBarChart,
+  Sector,
 } from 'recharts';
 import { cn } from '@/lib/utils';
 import { ColorUtils } from '../utils/colors';
 import { PartyVotes } from '../../../../types/PartyVotes';
+import { PieSectorDataItem } from 'recharts/types/polar/Pie';
 
 const chartConfig = {
   count: {
@@ -83,8 +87,12 @@ export const VotingSessionChart = ({
 
   if (type === 'donut') {
     return (
-      <ChartContainer config={chartConfig} className="mx-auto min-h-1 w-full">
+      <ChartContainer
+        config={chartConfig}
+        className="mx-auto min-h-1 w-full max-h-[300px]"
+      >
         <PieChart>
+          <PolarGrid gridType="circle"></PolarGrid>
           <ChartTooltip
             cursor={false}
             content={<ChartTooltipContent hideLabel />}
@@ -93,8 +101,12 @@ export const VotingSessionChart = ({
             data={votesByType}
             dataKey="count"
             nameKey="type"
-            innerRadius={60}
-            strokeWidth={5}
+            innerRadius={50}
+            opacity={0.5}
+            cornerRadius={5}
+            activeShape={({ outerRadius = 0, ...props }: PieSectorDataItem) => (
+              <Sector {...props} opacity={1} outerRadius={outerRadius + 10} />
+            )}
           >
             <Label
               content={({ viewBox }) => {

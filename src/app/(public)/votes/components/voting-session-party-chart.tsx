@@ -2,6 +2,8 @@ import React from 'react';
 import { Vote } from '../../../../types/GetVotingSessionVotesResponse';
 import {
   ChartContainer,
+  ChartLegend,
+  ChartLegendContent,
   ChartTooltip,
   ChartTooltipContent,
   type ChartConfig,
@@ -21,15 +23,26 @@ import { cn } from '@/lib/utils';
 import { ColorUtils } from '../utils/colors';
 import { PartyVotes } from '../../../../types/PartyVotes';
 import { PartyIcon } from '../../patch-notes/components/party-icon';
+import { CheckIcon, XIcon } from 'lucide-react';
 
 const chartConfig = {
   yes: {
     label: 'Sim',
     color: '#22c55e',
+    icon: () => (
+      <div className="rounded-md text-white bg-[var(--color-yes)]">
+        <CheckIcon size={18} />
+      </div>
+    ),
   },
   no: {
     label: 'Não',
     color: '#ef4444',
+    icon: () => (
+      <div className="rounded-md text-white bg-[var(--color-no)]">
+        <XIcon size={18} />
+      </div>
+    ),
   },
   obstruction: {
     label: 'Obstrução',
@@ -89,7 +102,7 @@ export const VotingSessionPartyChart = ({
 
   if (type === 'radar') {
     return (
-      <ChartContainer config={chartConfig} className=" min-h-1">
+      <ChartContainer config={chartConfig} className=" min-h-1 max-h-[300px]">
         <RadarChart data={votesByParty}>
           <ChartTooltip
             cursor={false}
@@ -142,6 +155,7 @@ export const VotingSessionPartyChart = ({
               fillOpacity: 1,
             }}
           />
+          <ChartLegend className="mt-8" content={<ChartLegendContent />} />
         </RadarChart>
       </ChartContainer>
     );

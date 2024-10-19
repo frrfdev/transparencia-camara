@@ -2,7 +2,13 @@ import React, { useState, useEffect, useRef, LegacyRef, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { ComboBox } from '@/components/ui/combo';
 import { cn } from '@/lib/utils';
-import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from '@/components/ui/form';
 import { useForm } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
 import { z } from 'zod';
@@ -12,7 +18,7 @@ import { useGetPropositionTypesQuery } from '../hooks/api/use-get-proposition-ty
 import { DataConverter } from '@/lib/converter';
 import { markForFocusLater, returnFocus } from '@/lib/focusManager';
 import { InputSound } from '@/components/ui/inut-sound';
-import { SlideIntoView } from '@/components/animated/slide-into-view';
+import { FilterSlideIntoView } from '@/components/animated/filter-slide-into-view';
 import { useSearchParams } from 'next/navigation';
 import { useMenuContext } from '@/app/providers/menu-provider';
 
@@ -41,10 +47,17 @@ export const PropositionsFilter = ({ onFilter, isOpen, close }: Props) => {
 
   const { data: propositionTypes, isLoading } = useGetPropositionTypesQuery();
 
-  const typeOptions = DataConverter.toSelectOptions(propositionTypes ?? [], 'cod', 'nome');
+  const typeOptions = DataConverter.toSelectOptions(
+    propositionTypes ?? [],
+    'cod',
+    'nome'
+  );
 
   const yearOptions = DataConverter.toSelectOptions(
-    Array.from({ length: new Date().getFullYear() - 1999 }, (_, i) => i + 2000).map((year) => ({
+    Array.from(
+      { length: new Date().getFullYear() - 1999 },
+      (_, i) => i + 2000
+    ).map((year) => ({
       value: year.toString(),
       label: year.toString(),
     })),
@@ -122,7 +135,7 @@ export const PropositionsFilter = ({ onFilter, isOpen, close }: Props) => {
   }, []);
 
   const content = (
-    <SlideIntoView
+    <FilterSlideIntoView
       onAnimationComplete={handleAnimationComplete}
       onAnimationStart={handleAnimationStart}
       shouldHide={shouldHide}
@@ -191,7 +204,7 @@ export const PropositionsFilter = ({ onFilter, isOpen, close }: Props) => {
           </Button>
         </form>
       </Form>
-    </SlideIntoView>
+    </FilterSlideIntoView>
   );
 
   return portalElement ? createPortal(content, portalElement) : null;

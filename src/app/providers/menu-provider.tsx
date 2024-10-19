@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 
 type Props = {
   children: React.ReactNode;
@@ -51,7 +51,9 @@ export const MenuProvider = ({ children }: Props) => {
       const updatedOptions = [...prev];
 
       options.forEach((newOption) => {
-        const existingIndex = updatedOptions.findIndex((option) => option.key === newOption.key);
+        const existingIndex = updatedOptions.findIndex(
+          (option) => option.key === newOption.key
+        );
 
         if (existingIndex !== -1) {
           // Replace the existing option
@@ -74,18 +76,26 @@ export const MenuProvider = ({ children }: Props) => {
     setOptions([]);
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+  const handleKeyDown = (e: KeyboardEvent) => {
     const optionWithKey = options.find((o) => o.key === e.key);
     if (optionWithKey) {
       optionWithKey.action();
     }
   };
 
+  useEffect(() => {
+    document.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [options]);
+
   return (
-    <MenuContext.Provider value={{ options, addOption, removeOption, resetOptions, addOptions }}>
-      <div className="h-full w-full overflow-hidden" onKeyDown={handleKeyDown}>
-        {children}
-      </div>
+    <MenuContext.Provider
+      value={{ options, addOption, removeOption, resetOptions, addOptions }}
+    >
+      <div className="h-full w-full overflow-hidden">{children}</div>
     </MenuContext.Provider>
   );
 };

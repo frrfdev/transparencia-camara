@@ -11,18 +11,14 @@ type Props = MotionProps & {
 };
 
 const variants = {
-  right: { open: { right: '0' }, closed: { right: '-100%' } },
-  left: {
-    open: { left: '0' },
-    closed: { left: '-100%' },
-  },
+  open: { opacity: 1 },
+  closed: { opacity: 0 },
 };
 
-export const SlideIntoView = ({
+export const FadeIntoView = ({
   children,
   className,
   shouldHide,
-  direction = 'right',
   ...props
 }: Props) => {
   return (
@@ -35,7 +31,8 @@ export const SlideIntoView = ({
             : 'absolute h-min p-4 overflow-hidden z-50 w-full',
           className
         )}
-        variants={variants[direction]}
+        variants={variants}
+        transition={{ duration: 1 }}
         initial="closed"
         animate="open"
         exit="closed"

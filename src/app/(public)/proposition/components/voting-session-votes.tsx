@@ -1,19 +1,25 @@
-import React from 'react';
-import { useGetVotingSessionVotesQuery } from '../hooks/api/use-get-voting-session-votes.query';
+import React, { useEffect } from 'react';
+import { useGetVotingSessionVotesQuery } from '../../../../hooks/api/use-get-voting-session-votes.query';
 import {
   DetailsGridContent,
   DetailsGridHeader,
 } from '@/components/ui/details-grid';
-import { VotingSessionChart } from '../../votes/components/voting-session-chart';
-import { VotingSessionPartyChart } from '../../votes/components/voting-session-party-chart';
 import { VotingSessionVotesSkeleton } from './voting-session-votes-skeleton';
-import { useGetVotingSessionDetailsQuery } from '../hooks/api/use-get-voting-session-details.query';
+import { useGetVotingSessionDetailsQuery } from '../../../../hooks/api/use-get-voting-session-details.query';
+import { VotingSessionVotesCharts } from './voting-session-votes-charts';
+import { useVotingSessionStore } from '../stores/use-voting-session-store';
+import { VotingSessionVotesPerson } from './voting-session-votes-person';
+import { useMenuContext } from '@/app/providers/menu-provider';
+import { redirect, useRouter } from 'next/navigation';
 
 type Props = {
   votingSessionId: string;
 };
 
 export const VotingSessionVotes = ({ votingSessionId }: Props) => {
+  const { addOption, removeOption } = useMenuContext();
+  const router = useRouter();
+
   const {
     data: votes,
     isLoading,
@@ -28,6 +34,23 @@ export const VotingSessionVotes = ({ votingSessionId }: Props) => {
   } = useGetVotingSessionDetailsQuery({
     votingSessionId,
   });
+
+  const selectedVisualization = useVotingSessionStore(
+    (state) => state.selectedVisualization
+  );
+
+  useEffect(() => {
+    addOption({
+      key: 'd',
+      label: 'Detalhes da Votação',
+      icon: 'D',
+      action: () => router.push(`/votation/${votingSessionId}`),
+    });
+
+    return () => {
+      removeOption('d');
+    };
+  }, [votingSessionId]);
 
   if (isLoading || isPending || isLoadingVotingSessionDetails)
     return <VotingSessionVotesSkeleton />;
@@ -58,29 +81,16 @@ export const VotingSessionVotes = ({ votingSessionId }: Props) => {
         </div>
       ) : (
         <div className="mt-4">
-          <div className="flex gap-4">
-            <div className="w-1/2">
-              <DetailsGridHeader>Votação</DetailsGridHeader>
-              <DetailsGridContent className=" flex items-center">
-                <VotingSessionChart votes={votes?.dados ?? []} type="donut" />
-              </DetailsGridContent>
-            </div>
-            <div className="w-1/2">
-              <DetailsGridHeader>Votação por Partido</DetailsGridHeader>
-              <DetailsGridContent>
-                <VotingSessionPartyChart
-                  type="radar"
-                  votes={votes?.dados ?? []}
-                />
-              </DetailsGridContent>
-            </div>
-          </div>
-          {votes?.dados.map((vote) => (
-            <div key={vote.deputado_.id}>
-              {vote.deputado_.nome} ({vote.deputado_.siglaPartido}) -{' '}
-              {vote.tipoVoto}
-            </div>
-          ))}
+          {(() => {
+            switch (selectedVisualization) {
+              case 'charts':
+                return (
+                  <VotingSessionVotesCharts votingSessionId={votingSessionId} />
+                );
+              case 'person':
+                return <VotingSessionVotesPerson votes={votes?.dados ?? []} />;
+            }
+          })()}
         </div>
       )}
     </DetailsGridContent>
