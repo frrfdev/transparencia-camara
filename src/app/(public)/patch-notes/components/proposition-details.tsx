@@ -73,7 +73,7 @@ export const PropositionDetails = ({
         isVisible && (
           <motion.div
             key="content"
-            className="h-full w-1/2 px-10 pt-4"
+            className="h-full w-1/2 px-10 pt-4 overflow-y-auto"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -154,7 +154,10 @@ export const PropositionDetails = ({
                 </DetailsGridContent>
               </div>
 
-              <DetailsGridContent className="relative p-4 h-full" tabIndex={0}>
+              <DetailsGridContent
+                className="relative p-4 h-full min-h-[100px]"
+                tabIndex={0}
+              >
                 <div className="absolute top-4 right-4 flex gap-2">
                   {propositionDetails?.urlInteiroTeor && (
                     <Link

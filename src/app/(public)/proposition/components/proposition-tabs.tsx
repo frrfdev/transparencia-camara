@@ -22,7 +22,7 @@ export const PropositionTabs = () => {
   const activeIndex = useMenuStore((state) => state.activeIndex);
 
   return (
-    <div className="w-full h-full overflow-hidden">
+    <div className="w-full h-full overflow-hidden flex flex-col">
       <motion.div
         key={activeIndex}
         variants={variants}

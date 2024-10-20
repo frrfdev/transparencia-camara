@@ -29,7 +29,7 @@ export const TabPropositionGeneralData = () => {
 
   return (
     <PropositionTab className="w-full flex gap-4 overflow-hidden h-full">
-      <div className="w-1/2 flex flex-col gap-4 pt-4">
+      <div className="w-1/2 flex flex-col gap-4 pt-4 overflow-y-auto">
         <DetailsGrid>
           <DetailsGridRow
             label="TIPO"
@@ -49,7 +49,7 @@ export const TabPropositionGeneralData = () => {
         </DetailsGrid>
         <div>
           <DetailsGridHeader>EMENTA</DetailsGridHeader>
-          <DetailsGridContent className="p-4 w-full drop-shadow-md">
+          <DetailsGridContent className="p-4 w-full drop-shadow-md overflow-y-auto min-h-[200px]">
             {propositionDetails?.ementa}
           </DetailsGridContent>
         </div>
