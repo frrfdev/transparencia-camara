@@ -1,19 +1,10 @@
-import { Button } from '@/components/ui/button';
 import React, { useEffect } from 'react';
 import { useVotingSessionStore } from '../stores/use-voting-session-store';
-import { CaretUpIcon } from '@radix-ui/react-icons';
-import {
-  ChevronDown,
-  ChevronDownIcon,
-  ChevronUp,
-  ChevronUpIcon,
-} from 'lucide-react';
-
-type Props = {};
+import { ChevronDownIcon, ChevronUpIcon } from 'lucide-react';
 
 const VISUALIZATION_VALUES = ['charts', 'person'];
 
-export const VotingSessionVisualizationMenu = (props: Props) => {
+export const VotingSessionVisualizationMenu = () => {
   const selectedVisualization = useVotingSessionStore(
     (state) => state.selectedVisualization
   );
