@@ -17,6 +17,7 @@ import {
 } from '@/components/ui/details-grid';
 import { Link } from '@/components/ui/link';
 import { useMessageContext } from '@/app/providers/message-provider';
+import { MenuOption, useMenuContext } from '@/app/providers/menu-provider';
 
 type PropositionDetailsProps = {
   proposition: Proposition | null;
@@ -26,8 +27,10 @@ export const PropositionDetails = ({
   proposition,
 }: PropositionDetailsProps) => {
   const { addMessage } = useMessageContext();
+  const { addOptions, removeOptions } = useMenuContext();
 
   const [isVisible, setIsVisible] = useState(false);
+  const [isResumeDialogOpen, setIsResumeDialogOpen] = useState(false);
 
   useEffect(() => {
     if (proposition) {
@@ -64,6 +67,35 @@ export const PropositionDetails = ({
   const isLoading = useMemo(() => {
     return isDetailsLoading;
   }, [isDetailsLoading]);
+
+  useEffect(() => {
+    const newOptions: MenuOption[] = [];
+    if (propositionDetails?.urlInteiroTeor) {
+      newOptions.push({
+        key: 'i',
+        label: 'Ver Projeto na Íntegra',
+        icon: 'I',
+        action: () => {
+          window.open(propositionDetails.urlInteiroTeor, '_blank');
+        },
+      });
+    }
+    if (resumeData?.resume) {
+      newOptions.push({
+        key: 'r',
+        label: 'Ver Resumo Completo',
+        icon: 'R',
+        action: () => {
+          setIsResumeDialogOpen(true);
+        },
+      });
+    }
+    addOptions(newOptions);
+
+    return () => {
+      removeOptions(['i', 'r']);
+    };
+  }, [propositionDetails?.urlInteiroTeor, resumeData?.resume]);
 
   return (
     <AnimatePresence mode="wait">
@@ -172,7 +204,10 @@ export const PropositionDetails = ({
                     </Link>
                   )}
                   {resumeData?.resume && (
-                    <Dialog>
+                    <Dialog
+                      open={isResumeDialogOpen}
+                      onOpenChange={setIsResumeDialogOpen}
+                    >
                       <DialogTrigger asChild>
                         <Button
                           variant="pokemon"

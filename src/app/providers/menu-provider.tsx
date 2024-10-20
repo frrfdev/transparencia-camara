@@ -19,6 +19,7 @@ export type MenuContextProps = {
   removeOption: (key: string) => void;
   resetOptions: () => void;
   addOptions: (options: MenuOption[]) => void;
+  removeOptions: (keys: string[]) => void;
 };
 
 const MenuContext = createContext<MenuContextProps>({
@@ -27,6 +28,7 @@ const MenuContext = createContext<MenuContextProps>({
   removeOption: () => {},
   resetOptions: () => {},
   addOptions: () => {},
+  removeOptions: () => {},
 });
 
 export const useMenuContext = () => useContext(MenuContext);
@@ -72,6 +74,10 @@ export const MenuProvider = ({ children }: Props) => {
     setOptions((prev) => prev.filter((o) => o.key !== key));
   };
 
+  const removeOptions = (keys: string[]) => {
+    setOptions((prev) => prev.filter((o) => !keys.includes(o.key)));
+  };
+
   const resetOptions = () => {
     setOptions([]);
   };
@@ -93,7 +99,14 @@ export const MenuProvider = ({ children }: Props) => {
 
   return (
     <MenuContext.Provider
-      value={{ options, addOption, removeOption, resetOptions, addOptions }}
+      value={{
+        options,
+        addOption,
+        removeOption,
+        resetOptions,
+        addOptions,
+        removeOptions,
+      }}
     >
       <div className="h-full w-full overflow-hidden">{children}</div>
     </MenuContext.Provider>

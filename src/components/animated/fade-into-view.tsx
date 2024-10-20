@@ -23,22 +23,19 @@ export const FadeIntoView = ({
 }: Props) => {
   return (
     <AnimatePresence mode="wait">
-      <motion.div
-        {...props}
-        className={cn(
-          shouldHide
-            ? 'overflow-hidden h-0 w-0'
-            : 'p-4 overflow-hidden h-full w-full',
-          className
-        )}
-        variants={variants}
-        transition={{ duration: 1 }}
-        initial="closed"
-        animate="open"
-        exit="closed"
-      >
-        {children}
-      </motion.div>
+      {!shouldHide ? (
+        <motion.div
+          {...props}
+          className={cn('h-full w-full', className)}
+          variants={variants}
+          transition={{ duration: 1 }}
+          initial="closed"
+          animate="open"
+          exit="closed"
+        >
+          {children}
+        </motion.div>
+      ) : null}
     </AnimatePresence>
   );
 };
