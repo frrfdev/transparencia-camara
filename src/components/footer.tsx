@@ -46,7 +46,7 @@ export const Footer = (props: React.HTMLAttributes<HTMLDivElement>) => {
           </span>
         </button>
       </div>
-      <div className="h-full flex items-center gap-2">
+      <div className="h-full flex items-center gap-4">
         {options.map((option) => (
           <button
             key={option.key}

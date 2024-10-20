@@ -1,8 +1,9 @@
 'use client';
 
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ArrowLeft, ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
 import React, { useState, useEffect, useRef, forwardRef } from 'react';
 import { useMenuStore } from '../../app/(public)/proposition/stores/use-menu-store';
+import { useMenuContext } from '@/app/providers/menu-provider';
 
 export type ScrollMenuProps = {
   children: React.ReactNode[];
@@ -57,7 +58,10 @@ export const ScrollMenuButton = forwardRef<
 ScrollMenuButton.displayName = 'ScrollMenuButton';
 
 export const ScrollMenu = ({ children }: ScrollMenuProps) => {
+  const { addOptions, removeOptions } = useMenuContext();
+
   const [startIndex, setStartIndex] = useState(0);
+
   const totalButtons = React.Children.count(children);
   const visibleButtons = 5;
 
@@ -103,6 +107,27 @@ export const ScrollMenu = ({ children }: ScrollMenuProps) => {
 
   useEffect(() => {
     playSound();
+  }, [activeIndex]);
+
+  useEffect(() => {
+    addOptions([
+      {
+        key: 'ArrowLeft',
+        label: 'Aba Anterior',
+        action: () => handleScroll('left'),
+        icon: <ArrowLeft />,
+      },
+      {
+        key: 'ArrowRight',
+        label: 'Próxima Aba',
+        action: () => handleScroll('right'),
+        icon: <ArrowRight />,
+      },
+    ]);
+
+    return () => {
+      removeOptions(['ArrowRight', 'ArrowLeft']);
+    };
   }, [activeIndex]);
 
   return (

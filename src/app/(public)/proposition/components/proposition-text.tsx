@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import { useGetPropositionDetailsQuery } from '../../patch-notes/hooks/api/use-get-proposition-details.query';
 import { useGetPropositionResume } from '../../patch-notes/hooks/api/use-get-proposition-resume';
@@ -10,6 +10,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { AnimatePresence, motion } from 'framer-motion';
 import { PropositionDetailsSkeleton } from '../../patch-notes/components/proposition-details.skeleton';
+import { MenuOption, useMenuContext } from '@/app/providers/menu-provider';
 
 const variants = {
   open: { opacity: 1 },
@@ -18,6 +19,7 @@ const variants = {
 
 export const PropositionText = () => {
   const params = useParams();
+  const { addOptions, removeOptions } = useMenuContext();
   const {
     data: propositionDetails,
     isPending: isLoadingPropositionDetails,
@@ -34,6 +36,26 @@ export const PropositionText = () => {
   });
 
   const isLoading = isLoadingPropositionDetails || isLoadingPropositionResume;
+
+  useEffect(() => {
+    const newOptions: MenuOption[] = [];
+    if (propositionDetails?.urlInteiroTeor) {
+      newOptions.push({
+        key: 'i',
+        label: 'Ver Projeto na Íntegra',
+        icon: 'I',
+        action: () => {
+          window.open(propositionDetails.urlInteiroTeor, '_blank');
+        },
+      });
+    }
+
+    addOptions(newOptions);
+
+    return () => {
+      removeOptions(['i']);
+    };
+  }, [propositionDetails?.urlInteiroTeor]);
 
   return (
     <AnimatePresence mode="wait">
@@ -54,7 +76,7 @@ export const PropositionText = () => {
             initial="closed"
             animate="open"
             exit="closed"
-            className="h-full overflow-hidden"
+            className="h-full overflow-hidden p-4"
           >
             <DetailsGridContent
               className="relative p-4 h-full rounded-md"

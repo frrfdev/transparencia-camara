@@ -38,7 +38,7 @@ export const TabPropositionVotingSessions = () => {
 
   return (
     <PropositionTab className="p-4 flex gap-4 overflow-hidden h-full">
-      <div className="w-1/2 h-full flex flex-col gap-2 overflow-auto shrink-1">
+      <div className="w-1/2 h-full flex flex-col gap-2 p-4 overflow-auto shrink-1">
         {votingSessions.dados.map((votingSession) => (
           <PokemonButton
             onFocus={(e) => {

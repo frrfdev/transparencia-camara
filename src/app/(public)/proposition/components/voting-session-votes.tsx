@@ -60,7 +60,7 @@ export const VotingSessionVotes = ({ votingSessionId }: Props) => {
 
   return (
     <DetailsGridContent
-      className="relative bg-transparent drop-shadow-soft w-1/2 h-full overflow-y-auto "
+      className="relative p-4 bg-transparent drop-shadow-soft w-1/2 h-full overflow-y-auto "
       tabIndex={0}
     >
       <DetailsGridHeader>
