@@ -116,7 +116,7 @@ export const PropositionText = () => {
                   </p>
                   <p className="text-md mb-10 text-gray-500 text-center">
                     Você pode gerar um resumo para esta proposição clicando no
-                    botão "Gerar Resumo" abaixo.
+                    botão &quot;Gerar Resumo&quot; abaixo.
                   </p>
                   <Input placeholder="email@exemplo.com"></Input>
                   <span className="text-sm text-gray-500 my-2 text-center">
