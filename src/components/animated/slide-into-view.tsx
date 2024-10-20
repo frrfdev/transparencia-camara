@@ -25,6 +25,8 @@ export const SlideIntoView = ({
   direction = 'right',
   ...props
 }: Props) => {
+  if (shouldHide) return null;
+
   return (
     <AnimatePresence mode="wait">
       <motion.div

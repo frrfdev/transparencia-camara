@@ -5,6 +5,10 @@ type VotingSessionStore = {
   setSelectedVotingSession: (votingSessionId: string) => void;
   selectedVisualization: 'charts' | 'person';
   setSelectedVisualization: (visualization: 'charts' | 'person') => void;
+  selectedPersonId: string;
+  setSelectedPersonId: (personId: string) => void;
+  showVotationReplay: boolean;
+  setShowVotationReplay: (show: boolean) => void;
 };
 
 export const useVotingSessionStore = create<VotingSessionStore>((set) => ({
@@ -14,4 +18,8 @@ export const useVotingSessionStore = create<VotingSessionStore>((set) => ({
   selectedVisualization: 'charts',
   setSelectedVisualization: (visualization) =>
     set({ selectedVisualization: visualization }),
+  selectedPersonId: '',
+  setSelectedPersonId: (personId) => set({ selectedPersonId: personId }),
+  showVotationReplay: true,
+  setShowVotationReplay: (show) => set({ showVotationReplay: show }),
 }));

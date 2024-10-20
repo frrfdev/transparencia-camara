@@ -23,7 +23,7 @@ export const useGetVotingSessionDetailsQuery = ({
           },
         }
       );
-      return response.data;
+      return response.data ?? null;
     },
     enabled: !!votingSessionId,
   });
