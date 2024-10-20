@@ -11,6 +11,7 @@ import { useVotingSessionStore } from '../stores/use-voting-session-store';
 import { VotingSessionVotesPerson } from './voting-session-votes-person';
 import { useMenuContext } from '@/app/providers/menu-provider';
 import { redirect, useRouter } from 'next/navigation';
+import { SymbolicVotation } from './symbolic-votation';
 
 type Props = {
   votingSessionId: string;
@@ -44,7 +45,9 @@ export const VotingSessionVotes = ({ votingSessionId }: Props) => {
       key: 'd',
       label: 'Detalhes da Votação',
       icon: 'D',
-      action: () => router.push(`/votation/${votingSessionId}`),
+      action: (e) => {
+        router.push(`/votation/${votingSessionId}`);
+      },
     });
 
     return () => {
@@ -69,15 +72,7 @@ export const VotingSessionVotes = ({ votingSessionId }: Props) => {
       </DetailsGridHeader>
       {!votes?.dados.length ? (
         <div className="flex flex-col gap-4 w-full h-full items-center justify-center p-6">
-          <h1 className="text-4xl font-black text-neutral-600 uppercase">
-            Votação Simbólica
-          </h1>
-          <p className="text-center">
-            A votação simbólica é uma votação onde os votos não são registrados
-            assim fazendo com que haja menos transparência e menos controle
-            sobre o processo. Deixando a população sem acesso a informações
-            sobre o voto de seus representantes.
-          </p>
+          <SymbolicVotation></SymbolicVotation>
         </div>
       ) : (
         <div className="mt-4">

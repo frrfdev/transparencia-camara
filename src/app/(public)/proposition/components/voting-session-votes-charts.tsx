@@ -28,6 +28,8 @@ export const VotingSessionVotesCharts = ({
       votingSessionId,
     });
 
+  if (!votingSessionVotes?.dados?.length) return null;
+
   return (
     <div className="flex flex-col gap-4">
       <div className="w-full">

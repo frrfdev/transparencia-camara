@@ -6,6 +6,8 @@ import { useGetPropositionDetailsQuery } from '../../patch-notes/hooks/api/use-g
 import { useGetPropositionResume } from '../../patch-notes/hooks/api/use-get-proposition-resume';
 import { DetailsGridContent } from '@/components/ui/details-grid';
 import Link from 'next/link';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 
 export const PropositionText = () => {
   const params = useParams();
@@ -42,11 +44,7 @@ export const PropositionText = () => {
         )}
       </div>
 
-      {isLoading ? (
-        <p>Carregando resumo...</p>
-      ) : isError ? (
-        <p>Erro ao carregar o resumo.</p>
-      ) : propositionResume?.resume ? (
+      {propositionResume?.resume ? (
         <div className="">
           <p className="text-sm text-gray-500 mb-2">Resumo gerado por IA:</p>
           {propositionResume.resume.map((item, index) => (
@@ -57,9 +55,20 @@ export const PropositionText = () => {
           ))}
         </div>
       ) : (
-        <div>
-          <p className="text-sm text-gray-500 mb-2">Ementa:</p>
-          <p className="mt-6">{propositionDetails?.ementa}</p>
+        <div className="flex h-full items-center justify-center flex-col p-6">
+          <p className="text-lg font-bold text-red-400 mb-2">
+            Resumo não encontrado
+          </p>
+          <p className="text-md mb-10 text-gray-500 text-center">
+            Você pode gerar um resumo para esta proposição clicando no botão
+            "Gerar Resumo" abaixo.
+          </p>
+          <Input placeholder="email@exemplo.com"></Input>
+          <span className="text-sm text-gray-500 my-2 text-center">
+            Coloque seu email aqui caso queira ser notificado quando o resumo
+            estiver pronto
+          </span>
+          <Button>Gerar Resumo</Button>
         </div>
       )}
     </DetailsGridContent>

@@ -8,6 +8,7 @@ type Props = {
 };
 
 export const PageTitle = ({ title }: Props) => {
+  return null;
   return (
     <motion.div
       className="absolute inline-block z-20 top-0 right-1/2 transform -translate-x-1/2  text-2xl  shadow-soft text-white font-bold uppercase py-2 px-6 bg-neutral-900"

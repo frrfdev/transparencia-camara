@@ -15,10 +15,8 @@ import {
   DetailsGridHeader,
   DetailsGridRow,
 } from '@/components/ui/details-grid';
-import { NovoIcon } from '@/components/icons/novo.svg';
-import { CidadaniaIcon } from '@/components/icons/cidadania.svg';
-import { MdbIcon } from '@/components/icons/mdb.svg';
 import { Link } from '@/components/ui/link';
+import { useMessageContext } from '@/app/providers/message-provider';
 
 type PropositionDetailsProps = {
   proposition: Proposition | null;
@@ -27,6 +25,8 @@ type PropositionDetailsProps = {
 export const PropositionDetails = ({
   proposition,
 }: PropositionDetailsProps) => {
+  const { addMessage } = useMessageContext();
+
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
@@ -74,9 +74,9 @@ export const PropositionDetails = ({
           <motion.div
             key="content"
             className="h-full w-1/2 px-10 pt-4"
-            initial={{ x: '100%' }}
-            animate={{ x: 0 }}
-            exit={{ x: '100%' }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
             transition={{ type: 'spring', stiffness: 300, damping: 30 }}
           >
             <div
@@ -92,8 +92,14 @@ export const PropositionDetails = ({
                 -{' '}
                 <span
                   title="Copiar ID"
-                  className="cursor-pointer hover:text-white"
+                  className="cursor-pointer hover:text-white text-purple-500"
                   onClick={() => {
+                    addMessage(
+                      {
+                        content: 'ID da proposta copiado',
+                      },
+                      1000
+                    );
                     navigator.clipboard.writeText(
                       propositionDetails?.id.toString() ?? ''
                     );
@@ -179,11 +185,7 @@ export const PropositionDetails = ({
                   )}
                 </div>
 
-                {isLoading ? (
-                  <p>Carregando resumo...</p>
-                ) : isError ? (
-                  <p>Erro ao carregar o resumo.</p>
-                ) : resumeData?.resume ? (
+                {resumeData?.resume ? (
                   <div className="">
                     <p className="text-sm text-gray-500 mb-2">
                       Resumo gerado por IA:

@@ -1,6 +1,7 @@
 'use client';
 
 import { useMenuContext } from '@/app/providers/menu-provider';
+import { returnFocus } from '@/lib/focusManager';
 import { ArrowLeft } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import React, { useEffect } from 'react';
@@ -12,6 +13,7 @@ export const Footer = (props: React.HTMLAttributes<HTMLDivElement>) => {
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Backspace') {
+        returnFocus();
         router.back();
       }
     };
@@ -29,6 +31,7 @@ export const Footer = (props: React.HTMLAttributes<HTMLDivElement>) => {
         <button
           className="flex gap-2 items-center focus:outline-none hover:text-orange-500 focus:text-orange-500 group"
           onClick={() => {
+            returnFocus();
             router.back();
           }}
         >

@@ -1,17 +1,18 @@
 'use client';
 
 import React from 'react';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { MenuProvider } from './menu-provider';
+import { MessageProvider } from './message-provider';
+import { CustomQueryClientProvider } from './custom-query-client-provider';
 
 export function Providers({ children }: { children: React.ReactNode }) {
-  const [queryClient] = React.useState(() => new QueryClient());
-
   return (
-    <QueryClientProvider client={queryClient}>
-      <div className="h-screen overflow-hidden w-full flex flex-col">
-        <MenuProvider>{children}</MenuProvider>
-      </div>
-    </QueryClientProvider>
+    <MessageProvider>
+      <CustomQueryClientProvider>
+        <div className="h-screen overflow-hidden w-full flex flex-col">
+          <MenuProvider>{children}</MenuProvider>
+        </div>
+      </CustomQueryClientProvider>
+    </MessageProvider>
   );
 }

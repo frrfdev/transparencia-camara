@@ -8,6 +8,8 @@ import { useParams } from 'next/navigation';
 import { useGetVotingSessionVotesQuery } from '@/hooks/api/use-get-voting-session-votes.query';
 import { BookText, Check, CircleOff, TrafficCone, X } from 'lucide-react';
 import { useVotingSessionStore } from '../stores/use-voting-session-store';
+import { ColorUtils } from '../../votes/utils/colors';
+import { SymbolicVotation } from './symbolic-votation';
 
 export const VotingSessionVotesPersonParams = () => {
   const { id } = useParams();
@@ -22,7 +24,15 @@ type Props = {
 };
 
 export const VotingSessionVotesPerson = ({ votes }: Props) => {
-  const { setSelectedPersonId } = useVotingSessionStore();
+  const { setSelectedPersonId, setSelectedPersonVote } =
+    useVotingSessionStore();
+
+  if (!votes.length)
+    return (
+      <div className="h-full w-full bg-white shadow-soft flex justify-center items-center flex-col p-6 rounded-lg">
+        <SymbolicVotation></SymbolicVotation>
+      </div>
+    );
 
   return (
     <div className="flex gap-4 flex-wrap">
@@ -36,9 +46,11 @@ export const VotingSessionVotesPerson = ({ votes }: Props) => {
           )}
           onClick={() => {
             setSelectedPersonId(vote.deputado_.id.toString());
+            setSelectedPersonVote(vote.tipoVoto);
           }}
           onFocus={() => {
             setSelectedPersonId(vote.deputado_.id.toString());
+            setSelectedPersonVote(vote.tipoVoto);
           }}
         >
           <PersonAvatar
@@ -48,13 +60,11 @@ export const VotingSessionVotesPerson = ({ votes }: Props) => {
           />
           <div
             className={cn(
-              'absolute -bottom-1 -right-1 rounded-full p-1 text-white',
-              vote.tipoVoto === 'Sim' && 'bg-green-500',
-              vote.tipoVoto === 'Não' && 'bg-red-500',
-              vote.tipoVoto === 'Abstenção' && 'bg-yellow-500',
-              vote.tipoVoto === 'Artigo 17' && 'bg-orange-500',
-              vote.tipoVoto === 'Obstrução' && 'bg-gray-500'
+              'absolute -bottom-1 -right-1 rounded-full p-1 text-white'
             )}
+            style={{
+              background: ColorUtils.voteTypeToColor(vote.tipoVoto),
+            }}
           >
             {(() => {
               switch (vote.tipoVoto) {

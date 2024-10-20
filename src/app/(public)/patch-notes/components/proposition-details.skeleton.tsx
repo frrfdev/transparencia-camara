@@ -5,9 +5,9 @@ export const PropositionDetailsSkeleton: React.FC = () => {
   return (
     <motion.div
       className="h-full w-1/2 px-10 pt-4"
-      initial={{ x: '100%' }}
-      animate={{ x: 0 }}
-      exit={{ x: '100%' }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
       transition={{ type: 'spring', stiffness: 300, damping: 30 }}
     >
       <div className="h-full w-full focus:outline-none rounded-lg gap-4 flex flex-col animate-pulse">

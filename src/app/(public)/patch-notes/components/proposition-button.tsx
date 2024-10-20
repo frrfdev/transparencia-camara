@@ -53,12 +53,14 @@ export const PropositionButton = ({
         {...props}
         isSelected={!!isSelected}
         isLoading={!!isLoading}
-        detailRender={proposition.numero}
+        detailRender={
+          <span className="text-sm">{`N° ${proposition.numero}`}</span>
+        }
       >
         <div className="p-4 px-10 w-full">
           <span className="line-clamp-2 text-start w-full">
             {proposition.ementa !== ''
-              ? proposition.ementa
+              ? `${proposition.ementa}`
               : 'Ementa não informada'}
           </span>
         </div>

@@ -6,7 +6,7 @@ import { cn } from '@/lib/utils';
 
 type Props = MotionProps & {
   direction?: 'right' | 'left';
-  shouldHide: boolean;
+  shouldHide?: boolean;
   className?: string;
 };
 
@@ -28,7 +28,7 @@ export const FadeIntoView = ({
         className={cn(
           shouldHide
             ? 'overflow-hidden h-0 w-0'
-            : 'absolute h-min p-4 overflow-hidden z-50 w-full',
+            : 'p-4 overflow-hidden h-full w-full',
           className
         )}
         variants={variants}

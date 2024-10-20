@@ -9,6 +9,7 @@ import { CircleCheck, CircleX } from 'lucide-react';
 import { useVotingSessionStore } from '../stores/use-voting-session-store';
 import { VotingSessionVotes } from './voting-session-votes';
 import { TabPropositionVotingSessionsSkeleton } from './tab-proposition-voting-sessions-skeleton';
+import { markForFocusLater, popWithoutFocus } from '@/lib/focusManager';
 
 export const TabPropositionVotingSessions = () => {
   const params = useParams();
@@ -40,8 +41,10 @@ export const TabPropositionVotingSessions = () => {
       <div className="w-1/2 h-full flex flex-col gap-2">
         {votingSessions.dados.map((votingSession) => (
           <PokemonButton
-            onFocus={() => {
+            onFocus={(e) => {
+              popWithoutFocus();
               setSelectedVotingSession(votingSession.id);
+              markForFocusLater(e.currentTarget);
             }}
             isSelected={selectedVotingSession === votingSession.id}
             key={votingSession.id}

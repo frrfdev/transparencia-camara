@@ -6,44 +6,46 @@ import { cn } from '@/lib/utils';
 
 type Props = MotionProps & {
   direction?: 'right' | 'left';
-  shouldHide: boolean;
+  shouldHide?: boolean;
   className?: string;
 };
 
 const variants = {
-  right: { open: { right: '0' }, closed: { right: '-100%' } },
+  right: { open: { translateX: '0' }, closed: { translateX: '100%' } },
   left: {
-    open: { left: '0' },
-    closed: { left: '-100%' },
+    open: { translateX: '0' },
+    closed: { translateX: '-100%' },
   },
 };
 
 export const SlideIntoView = ({
   children,
   className,
-  shouldHide,
   direction = 'right',
+  shouldHide,
   ...props
 }: Props) => {
-  if (shouldHide) return null;
-
   return (
     <AnimatePresence mode="wait">
-      <motion.div
-        {...props}
-        className={cn(
-          shouldHide
-            ? 'overflow-hidden h-0 w-0'
-            : 'absolute h-min p-4 overflow-hidden z-50 w-full',
-          className
-        )}
-        variants={variants[direction]}
-        initial="closed"
-        animate="open"
-        exit="closed"
-      >
-        {children}
-      </motion.div>
+      {shouldHide ? null : (
+        <motion.div
+          {...props}
+          className={cn(
+            'absolute z-50',
+            direction === 'right' ? 'right-0' : 'left-0',
+            className
+          )}
+          variants={variants[direction]}
+          initial="closed"
+          animate="open"
+          exit="closed"
+          transition={{
+            type: 'keyframes',
+          }}
+        >
+          {children}
+        </motion.div>
+      )}
     </AnimatePresence>
   );
 };

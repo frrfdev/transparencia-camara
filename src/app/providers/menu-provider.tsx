@@ -10,7 +10,7 @@ export type MenuOption = {
   key: string;
   label: string;
   icon: React.ReactNode;
-  action: () => void;
+  action: (e?: KeyboardEvent) => void;
 };
 
 export type MenuContextProps = {
@@ -79,7 +79,7 @@ export const MenuProvider = ({ children }: Props) => {
   const handleKeyDown = (e: KeyboardEvent) => {
     const optionWithKey = options.find((o) => o.key === e.key);
     if (optionWithKey) {
-      optionWithKey.action();
+      optionWithKey.action(e);
     }
   };
 

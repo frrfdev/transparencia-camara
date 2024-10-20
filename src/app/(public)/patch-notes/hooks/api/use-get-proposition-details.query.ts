@@ -11,13 +11,15 @@ export const useGetPropositionDetailsQuery = ({
 }: GetPropositionDetailsParams) => {
   return useQuery({
     queryKey: ['proposition-details', propositionId],
-    enabled: !!propositionId,
     staleTime: 1000 * 60 * 60 * 24, // 1 day
     queryFn: async () => {
+      if (!propositionId) return null;
       const response = await api.get<PropositionDetailsResponseApi>(
         `/proposicoes/${propositionId}`
       );
       return response.data.dados;
     },
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
   });
 };
