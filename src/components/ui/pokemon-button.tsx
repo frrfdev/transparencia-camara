@@ -2,6 +2,7 @@ import React, { forwardRef, useEffect, useRef } from 'react';
 import { ButtonProps } from './button';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
+import { TriangleBorder } from './triangle-border';
 
 export type PokemonButtonProps = {
   isSelected?: boolean;
@@ -94,14 +95,7 @@ export const PokemonButton = forwardRef<HTMLButtonElement, PokemonButtonProps>(
             style={{ background: skeletonColor }}
           ></div>
 
-          <svg
-            className="inset-0 h-full min-w-[40px] w-[40px]"
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 50 100"
-            preserveAspectRatio="none"
-          >
-            <polygon points="0,0 40,0 0,100" fill={skeletonColor} />
-          </svg>
+          <TriangleBorder color={skeletonColor} />
         </motion.div>
         {isLoading ? null : (
           <>
@@ -113,14 +107,12 @@ export const PokemonButton = forwardRef<HTMLButtonElement, PokemonButtonProps>(
                 {detailRender}
               </span>
             </div>
-            <svg
-              className="inset-0 h-full min-w-[40px] w-[40px]"
-              xmlns="http://www.w3.org/2000/svg"
+            <TriangleBorder
               viewBox="0 0 50 100"
-              preserveAspectRatio="none"
-            >
-              <polygon points="0,0 40,0 0,100" fill={color} />
-            </svg>
+              points="0,0 40,0 0,100"
+              color={color}
+              className="inset-0 h-full min-w-[40px] w-[40px]"
+            />
             {children}
           </>
         )}

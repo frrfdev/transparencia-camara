@@ -9,12 +9,12 @@ import { VotingSessionVisualizationMenu } from './voting-session-visualization-m
 export const propositionMenuButtons = [
   {
     icon: <Album size={32} />,
-    label: 'Geral',
+    label: 'Dados Gerais',
     value: 'general',
   },
   {
     icon: <Vote size={36} />,
-    label: 'Votos',
+    label: 'Votações',
     value: 'votes',
   },
   {

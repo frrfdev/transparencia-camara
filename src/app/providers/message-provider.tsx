@@ -1,6 +1,7 @@
 import { AnimatePresence } from 'framer-motion';
 import { createContext, ReactNode, useContext, useState } from 'react';
 import { motion } from 'framer-motion';
+import { TriangleBorder } from '@/components/ui/triangle-border';
 
 export type Message = {
   id: string;
@@ -51,13 +52,13 @@ export const MessageProvider = ({ children }: { children: ReactNode }) => {
               animate={{ opacity: 1, transform: 'translateX(-100%)' }}
               exit={{ opacity: 0, transform: 'translateX(0)' }}
             >
-              <svg
-                className="inset-0 w-[80px]  min-h-[40px] h-[80px]"
-                xmlns="http://www.w3.org/2000/svg"
+              <TriangleBorder
                 viewBox="0 0 40 40"
-              >
-                <polygon points="0,0 40,0 40,40" fill={'black'} opacity={0.7} />
-              </svg>
+                points="0,0 40,0 40,40"
+                color="black"
+                opacity={0.7}
+                className="inset-0 w-[80px]  min-h-[40px] h-[80px]"
+              />
               <div className="h-[80px] flex justify-end text-end px-4 items-center text-white w-[400px] shrink-0 bg-black bg-opacity-70">
                 {m.content}
               </div>
