@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 export const PropositionDetailsSkeleton: React.FC = () => {
   return (
     <motion.div
-      className="h-full w-full"
+      className="h-full w-1/2"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
