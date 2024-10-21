@@ -74,7 +74,9 @@ export const ScrollMenu = ({ children }: ScrollMenuProps) => {
   const playSound = () => {
     const audio = new Audio('/assets/audio/button.wav');
     audio.volume = 0.05;
-    audio.play();
+    audio.play().then(() => {
+      audio.remove();
+    });
   };
 
   const handleScroll = (direction: 'left' | 'right') => {

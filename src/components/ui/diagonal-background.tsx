@@ -42,7 +42,9 @@ export const DiagonalBackground = ({
         onAnimationStart={() => {
           const audio = new Audio('/assets/audio/slide.mp3');
           audio.volume = 0.1;
-          audio.play();
+          audio.play().then(() => {
+            audio.remove();
+          });
         }}
       >
         <DiagonalBackgroundElement

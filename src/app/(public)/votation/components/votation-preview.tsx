@@ -32,11 +32,15 @@ export const VotationPreview = () => {
     if (showVotationReplay) {
       const audio = new Audio('/assets/audio/focus.wav');
       audio.volume = 0.05;
-      audio.play();
+      audio.play().then(() => {
+        audio.remove();
+      });
     } else {
       const audio = new Audio('/assets/audio/close.mp3');
       audio.volume = 0.05;
-      audio.play();
+      audio.play().then(() => {
+        audio.remove();
+      });
     }
   }, [showVotationReplay]);
 

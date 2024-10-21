@@ -90,7 +90,9 @@ export const PropositionsFilter = ({ onFilter, isOpen, close }: Props) => {
   const handleAnimationStart = () => {
     const audio = new Audio('/assets/audio/slide.mp3');
     audio.volume = 0.01;
-    audio.play();
+    audio.play().then(() => {
+      audio.remove();
+    });
   };
 
   const handleFocusTypeAcronym = (e: React.FocusEvent<HTMLInputElement>) => {

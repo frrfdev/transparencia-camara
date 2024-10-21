@@ -26,7 +26,9 @@ export const VotingSessionVisualizationMenu = () => {
           : 0;
       const audio = new Audio('/assets/audio/decline.wav');
       audio.volume = 0.05;
-      audio.play();
+      audio.play().then(() => {
+        audio.remove();
+      });
       setSelectedVisualization(
         VISUALIZATION_VALUES[nextIndex] as 'charts' | 'person'
       );

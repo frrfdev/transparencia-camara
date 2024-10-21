@@ -136,6 +136,11 @@ export const PropositionDetails = ({
                     navigator.clipboard.writeText(
                       propositionDetails?.id.toString() ?? ''
                     );
+                    const audio = new Audio('/assets/audio/copy.wav');
+                    audio.volume = 0.05;
+                    audio.play().then(() => {
+                      audio.remove();
+                    });
                   }}
                 >
                   {propositionDetails?.id ?? ''}

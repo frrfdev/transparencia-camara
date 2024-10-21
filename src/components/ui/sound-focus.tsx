@@ -10,7 +10,9 @@ export const SoundFocus = (props: Props) => {
       onFocus: (e: React.FocusEvent<HTMLDivElement>) => {
         const audio = new Audio('/assets/audio/focus.ogg');
         audio.volume = 0.05;
-        audio.play();
+        audio.play().then(() => {
+          audio.remove();
+        });
         (child as React.ReactElement).props.onFocus?.(e);
       },
     });

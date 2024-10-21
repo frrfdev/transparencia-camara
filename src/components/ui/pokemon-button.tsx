@@ -49,7 +49,9 @@ export const PokemonButton = forwardRef<HTMLButtonElement, PokemonButtonProps>(
         const audio = new Audio('/assets/audio/focus.ogg');
         audioRef.current = audio;
         audio.volume = 0.05;
-        audio.play();
+        audio.play().then(() => {
+          audio.remove();
+        });
       }
     }, [isSelected]);
 
@@ -63,7 +65,9 @@ export const PokemonButton = forwardRef<HTMLButtonElement, PokemonButtonProps>(
             const audio = new Audio('/assets/audio/focus.ogg');
             audioRef.current = audio;
             audio.volume = 0.05;
-            audio.play();
+            audio.play().then(() => {
+              audio.remove();
+            });
           }
         }}
         className={cn(
