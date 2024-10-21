@@ -14,8 +14,8 @@ export const InputSound = ({ children, disabled }: Props) => {
           if (!disabled) {
             const focusAudio = new Audio('/assets/audio/focus.ogg');
             focusAudio.volume = 0.1;
-            focusaudio.play().then(() => {
-              audio.remove();
+            focusAudio.play().then(() => {
+              focusAudio.remove();
             });
           }
           (child as React.ReactElement)?.props?.onFocus?.(e);

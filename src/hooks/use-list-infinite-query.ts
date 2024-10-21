@@ -34,6 +34,8 @@ export const useListInfiniteQuery = <T>(
       const { filter, _current, _total, _lastPage, ...restParams } =
         params || {};
 
+      console.log(filter);
+
       const response = await api.get<PaginatedRequestApi<T>>(url, {
         params: {
           ...(restParams || {}),

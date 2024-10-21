@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { getPropositionResume } from '../../actions/get-proposition-resume';
 import { PropositionResumeData } from '../../types/PropositionResumeData';
 import { useMessageContext } from '@/app/providers/message-provider';

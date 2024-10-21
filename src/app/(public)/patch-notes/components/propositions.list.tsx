@@ -27,6 +27,7 @@ export const PropositionsList = () => {
   const searchParams = useSearchParams();
   const typeAcronym = searchParams?.get('typeAcronym');
   const year = searchParams?.get('year');
+  const number = searchParams?.get('number');
 
   const {
     data: propositions,
@@ -43,6 +44,7 @@ export const PropositionsList = () => {
     filter: {
       typeAcronym,
       year,
+      number,
     },
   } as GetPropositionsParams);
 
@@ -68,66 +70,69 @@ export const PropositionsList = () => {
     };
   }, []);
 
-  if (propositions?.pages.flatMap((page) => page.data).length === 0) {
-    return (
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 0.5 }}
-        transition={{ duration: 0.5 }}
-        className="h-full w-full flex justify-center items-center font-bold uppercase text-gray-800 opacity-50 text-4xl md:text-[10rem] text-center p-6 leading-[100%]"
-      >
-        Nenhuma Proposta
-      </motion.div>
-    );
-  }
-
   return (
     <div className="h-full w-full flex gap-2 pb-4 relative overflow-hidden">
-      <div className="flex flex-col p-10 pt-4 pb-0 h-full w-1/2">
-        <InfiniteList
-          isLoading={isLoading}
-          fetchNextPage={fetchNextPage}
-          className="p-4"
-        >
-          <div className="h-full flex w-full flex-col gap-4">
-            {propositions?.pages
-              .flatMap((page) => page.data)
-              ?.map((proposition) => (
-                <PropositionButton
-                  isSelected={proposition.id === selectedPropositionId}
-                  key={proposition.id}
-                  onFocus={() => {
-                    setSelectedPropositionId(proposition.id);
-                    addOptions([
-                      {
-                        key: 'd',
-                        label: 'Detalhes',
-                        icon: 'D',
-                        action: () => {
-                          router.push(`/proposition/${proposition.id}`);
-                        },
-                      },
-                    ]);
-                  }}
-                  proposition={proposition}
-                ></PropositionButton>
-              ))}
-            {isLoading || isFetchingNextPage
-              ? Array.from(Array(paginationConfig.pageSize)).map((_, index) => (
-                  <PropositionButton
-                    key={`prop-${index}`}
-                    isLoading={true}
-                    proposition={{} as Proposition}
-                  />
-                ))
-              : null}
+      {(propositions?.pages &&
+        propositions?.pages?.flatMap((page) => page?.data ?? [])?.length > 0) ||
+      isLoading ? (
+        <>
+          <div className="flex flex-col p-10 pt-4 pb-0 h-full w-1/2">
+            <InfiniteList
+              isLoading={isLoading}
+              fetchNextPage={fetchNextPage}
+              className="p-4"
+            >
+              <div className="h-full flex w-full flex-col gap-4">
+                {propositions?.pages
+                  .flatMap((page) => page.data)
+                  ?.map((proposition) => (
+                    <PropositionButton
+                      isSelected={proposition.id === selectedPropositionId}
+                      key={proposition.id}
+                      onFocus={() => {
+                        setSelectedPropositionId(proposition.id);
+                        addOptions([
+                          {
+                            key: 'd',
+                            label: 'Detalhes',
+                            icon: 'D',
+                            action: () => {
+                              router.push(`/proposition/${proposition.id}`);
+                            },
+                          },
+                        ]);
+                      }}
+                      proposition={proposition}
+                    ></PropositionButton>
+                  ))}
+                {isLoading || isFetchingNextPage
+                  ? Array.from(Array(paginationConfig.pageSize)).map(
+                      (_, index) => (
+                        <PropositionButton
+                          key={`prop-${index}`}
+                          isLoading={true}
+                          proposition={{} as Proposition}
+                        />
+                      )
+                    )
+                  : null}
+              </div>
+            </InfiniteList>
           </div>
-        </InfiniteList>
-      </div>
-      {selectedPropositionId && selectedProposition && (
-        <PropositionDetails proposition={selectedProposition} />
+          {selectedPropositionId && selectedProposition && (
+            <PropositionDetails proposition={selectedProposition} />
+          )}
+        </>
+      ) : (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 0.5 }}
+          transition={{ duration: 0.5 }}
+          className="h-full w-full flex justify-center items-center font-bold uppercase text-gray-800 opacity-50 text-4xl md:text-[10rem] text-center p-6 leading-[100%]"
+        >
+          Nenhuma Proposta
+        </motion.div>
       )}
-
       <PropositionsFilter
         onFilter={(values) => {
           router.push(`/patch-notes?${UrlUtils.buildQueryString(values)}`);

@@ -46,6 +46,12 @@ export const TabPropositionGeneralData = () => {
             label="ORGÃO"
             value={propositionDetails?.statusProposicao.siglaOrgao}
           />
+          <DetailsGridRow
+            label="DATA"
+            value={Intl.DateTimeFormat('pt-BR').format(
+              new Date(propositionDetails?.dataApresentacao ?? '')
+            )}
+          />
         </DetailsGrid>
         <div>
           <DetailsGridHeader>EMENTA</DetailsGridHeader>

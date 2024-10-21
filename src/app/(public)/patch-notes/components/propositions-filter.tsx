@@ -21,10 +21,12 @@ import { InputSound } from '@/components/ui/inut-sound';
 import { FilterSlideIntoView } from '@/components/animated/filter-slide-into-view';
 import { useSearchParams } from 'next/navigation';
 import { useMenuContext } from '@/app/providers/menu-provider';
+import { Input } from '@/components/ui/input';
 
 const formSchema = z.object({
   typeAcronym: z.array(z.string()).nullable(),
   year: z.array(z.string()).nullable(),
+  number: z.string().nullable(),
 });
 
 type Props = {
@@ -42,8 +44,10 @@ export const PropositionsFilter = ({ onFilter, isOpen, close }: Props) => {
   const [isPreviousFocusSetted, setIsPreviousFocusSetted] = useState(false);
 
   const searchParams = useSearchParams();
+
   const typeAcronym = searchParams?.get('typeAcronym');
   const year = searchParams?.get('year');
+  const number = searchParams?.get('number');
 
   const { data: propositionTypes, isLoading } = useGetPropositionTypesQuery();
 
@@ -70,6 +74,7 @@ export const PropositionsFilter = ({ onFilter, isOpen, close }: Props) => {
     defaultValues: {
       typeAcronym: [],
       year: [],
+      number: '',
     },
   });
 
@@ -95,7 +100,7 @@ export const PropositionsFilter = ({ onFilter, isOpen, close }: Props) => {
     });
   };
 
-  const handleFocusTypeAcronym = (e: React.FocusEvent<HTMLInputElement>) => {
+  const handleFocusNumber = (e: React.FocusEvent<HTMLInputElement>) => {
     if (e.relatedTarget && !isPreviousFocusSetted) {
       markForFocusLater(e.relatedTarget);
       setIsPreviousFocusSetted(true);
@@ -125,7 +130,8 @@ export const PropositionsFilter = ({ onFilter, isOpen, close }: Props) => {
   useEffect(() => {
     form.setValue('typeAcronym', typeAcronym?.split(',') ?? []);
     form.setValue('year', year?.split(',') ?? []);
-  }, [typeAcronym, year]);
+    form.setValue('number', number ?? '');
+  }, [typeAcronym, year, number]);
 
   useEffect(() => {
     const element = document.getElementById('portals');
@@ -148,6 +154,31 @@ export const PropositionsFilter = ({ onFilter, isOpen, close }: Props) => {
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           <FormField
             control={form.control}
+            name="number"
+            render={({ field }) => (
+              <FormItem>
+                <FormControl>
+                  <InputSound disabled={!isOpen}>
+                    <Input
+                      {...field}
+                      value={field.value ?? ''}
+                      tabIndex={isOpen ? 0 : -1}
+                      ref={(element: HTMLInputElement | null) => {
+                        firstFieldRef.current = element;
+                        field.ref(element);
+                      }}
+                      onFocus={handleFocusNumber}
+                      placeholder="Números separados por vírgula. Exemplo(10,20,30)"
+                      className="rounded-full  bg-white  data-[focused=true]:ring-2 ring-black h-14"
+                    />
+                  </InputSound>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
             name="typeAcronym"
             render={({ field }) => (
               <FormItem>
@@ -160,13 +191,12 @@ export const PropositionsFilter = ({ onFilter, isOpen, close }: Props) => {
                       isLoading={isLoading}
                       tabIndex={isOpen ? 0 : -1}
                       options={typeOptions}
-                      onFocus={handleFocusTypeAcronym}
                       ref={(element: HTMLInputElement | null) => {
                         firstFieldRef.current = element;
                         field.ref(element);
                       }}
-                      placeholder="Tipo"
-                      className="rounded-full  data-[focused=true]:bg-black data-[focused=true]:text-white h-14 data-[focused=true]:placeholder:text-white data-[focused=true]:border-0"
+                      placeholder="Tipo da proposta"
+                      className="rounded-full data-[focused=true]:ring-2 ring-black h-14"
                       optionClassName="rounded-full whitespace-nowrap flex overflow-hidden overflow-ellipsis  data-[selected=true]:bg-black data-[checked=true]:bg-orange-500 data-[selected=true]:text-white"
                     />
                   </InputSound>
@@ -187,9 +217,9 @@ export const PropositionsFilter = ({ onFilter, isOpen, close }: Props) => {
                       tabIndex={isOpen ? 0 : -1}
                       value={field.value ?? []}
                       options={yearOptions}
-                      placeholder="Ano"
+                      placeholder="Ano de apresentação"
                       mode="multi"
-                      className="rounded-full  data-[focused=true]:bg-black data-[focused=true]:text-white h-14 data-[focused=true]:placeholder:text-white data-[focused=true]:border-0"
+                      className="rounded-full  data-[focused=true]:ring-2 ring-black h-14"
                       optionClassName="rounded-full whitespace-nowrap flex overflow-hidden overflow-ellipsis  data-[selected=true]:bg-black data-[checked=true]:bg-orange-500 data-[selected=true]:text-white"
                     />
                   </InputSound>

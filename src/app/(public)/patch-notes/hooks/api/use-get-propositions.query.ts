@@ -67,6 +67,7 @@ export const useGetPropositionsQuery = ({
       filter: {
         siglaTipo: params.filter?.typeAcronym,
         ano: params.filter?.year,
+        numero: params.filter?.number,
       },
     }
   );

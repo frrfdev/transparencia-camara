@@ -12,6 +12,7 @@ import { PropositionDetailsSkeleton } from '../../patch-notes/components/proposi
 import { MenuOption, useMenuContext } from '@/app/providers/menu-provider';
 import { SoundFocus } from '@/components/ui/sound-focus';
 import { Link } from '@/components/ui/link';
+import { PropositionTextSkeleton } from './proposition-text-skeleton';
 
 const variants = {
   open: { opacity: 1 },
@@ -21,20 +22,14 @@ const variants = {
 export const PropositionText = () => {
   const params = useParams();
   const { addOptions, removeOptions } = useMenuContext();
-  const {
-    data: propositionDetails,
-    isPending: isLoadingPropositionDetails,
-    isError: isErrorPropositionDetails,
-  } = useGetPropositionDetailsQuery({
-    propositionId: params.id as string,
-  });
-  const {
-    data: propositionResume,
-    isPending: isLoadingPropositionResume,
-    isError: isErrorPropositionResume,
-  } = useGetPropositionResume({
-    propositionId: params.id as string,
-  });
+  const { data: propositionDetails, isPending: isLoadingPropositionDetails } =
+    useGetPropositionDetailsQuery({
+      propositionId: params.id as string,
+    });
+  const { data: propositionResume, isPending: isLoadingPropositionResume } =
+    useGetPropositionResume({
+      propositionId: params.id as string,
+    });
 
   const isLoading = isLoadingPropositionDetails || isLoadingPropositionResume;
 
@@ -69,7 +64,7 @@ export const PropositionText = () => {
         className="h-full overflow-hidden"
       >
         {isLoading ? (
-          <PropositionDetailsSkeleton></PropositionDetailsSkeleton>
+          <PropositionTextSkeleton></PropositionTextSkeleton>
         ) : (
           <motion.div
             variants={variants}
