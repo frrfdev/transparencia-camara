@@ -10,6 +10,7 @@ import { BookText, Check, CircleOff, TrafficCone, X } from 'lucide-react';
 import { useVotingSessionStore } from '../stores/use-voting-session-store';
 import { ColorUtils } from '../../votes/utils/colors';
 import { SymbolicVotation } from './symbolic-votation';
+import { SoundFocus } from '@/components/ui/sound-focus';
 
 export const VotingSessionVotesPersonParams = () => {
   const { id } = useParams();
@@ -35,53 +36,54 @@ export const VotingSessionVotesPerson = ({ votes }: Props) => {
     );
 
   return (
-    <div className="flex gap-4 flex-wrap">
+    <div className="flex gap-4 flex-wrap px-4">
       {votes?.map((vote) => (
-        <div
-          tabIndex={2}
-          key={vote.deputado_.id}
-          className={cn(
-            'w-20 relative cursor-pointer h-20 min-w-20 rounded-lg  backdrop-blur-lg shadow-soft bg-opacity-20 flex justify-center items-center focus:bg-opacity-50 hover:bg-opacity-50',
-            'bg-gray-500'
-          )}
-          onClick={() => {
-            setSelectedPersonId(vote.deputado_.id.toString());
-            setSelectedPersonVote(vote.tipoVoto);
-          }}
-          onFocus={() => {
-            setSelectedPersonId(vote.deputado_.id.toString());
-            setSelectedPersonVote(vote.tipoVoto);
-          }}
-        >
-          <PersonAvatar
-            avatarUrl={vote.deputado_.urlFoto}
-            name={vote.deputado_.nome}
-            className="w-16 h-16 min-w-16 rounded-lg"
-          />
+        <SoundFocus key={vote.deputado_.id}>
           <div
+            tabIndex={2}
             className={cn(
-              'absolute -bottom-1 -right-1 rounded-full p-1 text-white'
+              'w-20 relative cursor-pointer h-20 min-w-20 rounded-lg  backdrop-blur-lg shadow-soft bg-opacity-20 flex justify-center items-center focus:bg-opacity-50 hover:bg-opacity-50',
+              'bg-gray-500'
             )}
-            style={{
-              background: ColorUtils.voteTypeToColor(vote.tipoVoto),
+            onClick={() => {
+              setSelectedPersonId(vote.deputado_.id.toString());
+              setSelectedPersonVote(vote.tipoVoto);
+            }}
+            onFocus={() => {
+              setSelectedPersonId(vote.deputado_.id.toString());
+              setSelectedPersonVote(vote.tipoVoto);
             }}
           >
-            {(() => {
-              switch (vote.tipoVoto) {
-                case 'Sim':
-                  return <Check size={18} strokeWidth={2} />;
-                case 'Não':
-                  return <X size={18} strokeWidth={2} />;
-                case 'Abstenção':
-                  return <CircleOff size={18} strokeWidth={2} />;
-                case 'Artigo 17':
-                  return <BookText size={18} strokeWidth={2} />;
-                case 'Obstrução':
-                  return <TrafficCone size={18} strokeWidth={2} />;
-              }
-            })()}
+            <PersonAvatar
+              avatarUrl={vote.deputado_.urlFoto}
+              name={vote.deputado_.nome}
+              className="w-16 h-16 min-w-16 rounded-lg"
+            />
+            <div
+              className={cn(
+                'absolute -bottom-1 -right-1 rounded-full p-1 text-white'
+              )}
+              style={{
+                background: ColorUtils.voteTypeToColor(vote.tipoVoto),
+              }}
+            >
+              {(() => {
+                switch (vote.tipoVoto) {
+                  case 'Sim':
+                    return <Check size={18} strokeWidth={2} />;
+                  case 'Não':
+                    return <X size={18} strokeWidth={2} />;
+                  case 'Abstenção':
+                    return <CircleOff size={18} strokeWidth={2} />;
+                  case 'Artigo 17':
+                    return <BookText size={18} strokeWidth={2} />;
+                  case 'Obstrução':
+                    return <TrafficCone size={18} strokeWidth={2} />;
+                }
+              })()}
+            </div>
           </div>
-        </div>
+        </SoundFocus>
       ))}
     </div>
   );

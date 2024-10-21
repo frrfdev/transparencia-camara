@@ -18,6 +18,7 @@ import {
 import { Link } from '@/components/ui/link';
 import { useMessageContext } from '@/app/providers/message-provider';
 import { MenuOption, useMenuContext } from '@/app/providers/menu-provider';
+import { SoundFocus } from '@/components/ui/sound-focus';
 
 type PropositionDetailsProps = {
   proposition: Proposition | null;
@@ -192,16 +193,18 @@ export const PropositionDetails = ({
               >
                 <div className="absolute top-4 right-4 flex gap-2">
                   {propositionDetails?.urlInteiroTeor && (
-                    <Link
-                      href={propositionDetails.urlInteiroTeor}
-                      target="_blank"
-                      variant="pokemon"
-                      tabIndex={0}
-                      rel="noopener noreferrer"
-                      className="bg-purple-500 hover:bg-purple-600 focus:bg-black text-white font-bold py-2 px-4 transition duration-300 text-sm"
-                    >
-                      Ver Projeto na Íntegra
-                    </Link>
+                    <SoundFocus>
+                      <Link
+                        href={propositionDetails.urlInteiroTeor}
+                        target="_blank"
+                        variant="pokemon"
+                        tabIndex={0}
+                        rel="noopener noreferrer"
+                        className="bg-purple-500 hover:bg-purple-600 focus:bg-black text-white font-bold py-2 px-4 transition duration-300 text-sm"
+                      >
+                        Ver Projeto na Íntegra
+                      </Link>
+                    </SoundFocus>
                   )}
                   {resumeData?.resume && (
                     <Dialog

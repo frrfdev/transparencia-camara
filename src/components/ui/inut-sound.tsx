@@ -12,7 +12,7 @@ export const InputSound = ({ children, disabled }: Props) => {
       {
         onFocus: (e) => {
           if (!disabled) {
-            const focusAudio = new Audio('/assets/audio/focus.wav');
+            const focusAudio = new Audio('/assets/audio/focus.ogg');
             focusAudio.volume = 0.1;
             focusAudio.play();
           }

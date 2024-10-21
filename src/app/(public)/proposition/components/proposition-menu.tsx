@@ -22,16 +22,18 @@ export const propositionMenuButtons = [
     label: 'Autores',
     value: 'authors',
   },
-  {
-    icon: <Clock size={32} />,
-    label: 'Tramitações',
-    value: 'tramitacoes',
-  },
-  {
-    icon: <GitCompareArrows size={36} />,
-    label: 'Relacionadas',
-    value: 'relacionadas',
-  },
+  // {
+  //   icon: <Clock size={32} />,
+  //   label: 'Tramitações',
+  //   value: 'tramitacoes',
+  //   disabled: true,
+  // },
+  // {
+  //   icon: <GitCompareArrows size={36} />,
+  //   label: 'Relacionadas',
+  //   value: 'relacionadas',
+  //   disabled: true,
+  // },
 ];
 
 export const PropositionMenu = () => {
@@ -45,6 +47,7 @@ export const PropositionMenu = () => {
             <ScrollMenuButton
               key={button.label}
               icon={button.icon}
+              title={button.label}
             ></ScrollMenuButton>
           ))}
         </ScrollMenu>

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { useVotingSessionStore } from '../stores/use-voting-session-store';
 import { ChevronDownIcon, ChevronUpIcon } from 'lucide-react';
 
@@ -12,28 +12,36 @@ export const VotingSessionVisualizationMenu = () => {
     (state) => state.setSelectedVisualization
   );
 
-  const changeVisualization = (direction: 'up' | 'down') => {
-    const currentIndex = VISUALIZATION_VALUES.indexOf(selectedVisualization);
+  const changeVisualization = useCallback(
+    (direction: 'up' | 'down') => {
+      const currentIndex = VISUALIZATION_VALUES.indexOf(selectedVisualization);
 
-    const nextIndex =
-      direction === 'up'
-        ? currentIndex > 0
-          ? currentIndex - 1
-          : VISUALIZATION_VALUES.length - 1
-        : currentIndex < VISUALIZATION_VALUES.length - 1
-        ? currentIndex + 1
-        : 0;
+      const nextIndex =
+        direction === 'up'
+          ? currentIndex > 0
+            ? currentIndex - 1
+            : VISUALIZATION_VALUES.length - 1
+          : currentIndex < VISUALIZATION_VALUES.length - 1
+          ? currentIndex + 1
+          : 0;
+      const audio = new Audio('/assets/audio/decline.wav');
+      audio.volume = 0.05;
+      audio.play();
+      setSelectedVisualization(
+        VISUALIZATION_VALUES[nextIndex] as 'charts' | 'person'
+      );
+    },
+    [selectedVisualization, setSelectedVisualization]
+  );
 
-    setSelectedVisualization(
-      VISUALIZATION_VALUES[nextIndex] as 'charts' | 'person'
-    );
-  };
-
-  const handleKeyDown = (e: KeyboardEvent) => {
-    if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
-      changeVisualization(e.key === 'ArrowUp' ? 'up' : 'down');
-    }
-  };
+  const handleKeyDown = useCallback(
+    (e: KeyboardEvent) => {
+      if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+        changeVisualization(e.key === 'ArrowUp' ? 'up' : 'down');
+      }
+    },
+    [changeVisualization]
+  );
 
   useEffect(() => {
     document.addEventListener('keydown', handleKeyDown);

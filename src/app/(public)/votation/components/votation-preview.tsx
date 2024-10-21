@@ -29,6 +29,18 @@ export const VotationPreview = () => {
   });
 
   useEffect(() => {
+    if (showVotationReplay) {
+      const audio = new Audio('/assets/audio/focus.wav');
+      audio.volume = 0.05;
+      audio.play();
+    } else {
+      const audio = new Audio('/assets/audio/close.mp3');
+      audio.volume = 0.05;
+      audio.play();
+    }
+  }, [showVotationReplay]);
+
+  useEffect(() => {
     addOption({
       key: 'r',
       icon: 'R',

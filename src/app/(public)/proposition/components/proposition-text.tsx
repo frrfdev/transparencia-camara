@@ -5,12 +5,13 @@ import { useParams } from 'next/navigation';
 import { useGetPropositionDetailsQuery } from '../../patch-notes/hooks/api/use-get-proposition-details.query';
 import { useGetPropositionResume } from '../../patch-notes/hooks/api/use-get-proposition-resume';
 import { DetailsGridContent } from '@/components/ui/details-grid';
-import Link from 'next/link';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { AnimatePresence, motion } from 'framer-motion';
 import { PropositionDetailsSkeleton } from '../../patch-notes/components/proposition-details.skeleton';
 import { MenuOption, useMenuContext } from '@/app/providers/menu-provider';
+import { SoundFocus } from '@/components/ui/sound-focus';
+import { Link } from '@/components/ui/link';
 
 const variants = {
   open: { opacity: 1 },
@@ -84,14 +85,18 @@ export const PropositionText = () => {
             >
               <div className="absolute top-4 right-4 flex gap-2">
                 {propositionDetails?.urlInteiroTeor && (
-                  <Link
-                    href={propositionDetails.urlInteiroTeor}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded transition duration-300 text-sm"
-                  >
-                    Ver Projeto na Íntegra
-                  </Link>
+                  <SoundFocus>
+                    <Link
+                      href={propositionDetails.urlInteiroTeor}
+                      target="_blank"
+                      variant="pokemon"
+                      tabIndex={0}
+                      rel="noopener noreferrer"
+                      className="bg-purple-500 hover:bg-purple-600 focus:bg-black text-white font-bold py-2 px-4 transition duration-300 text-sm"
+                    >
+                      Ver Projeto na Íntegra
+                    </Link>
+                  </SoundFocus>
                 )}
               </div>
 
@@ -123,7 +128,14 @@ export const PropositionText = () => {
                     Coloque seu email aqui caso queira ser notificado quando o
                     resumo estiver pronto
                   </span>
-                  <Button>Gerar Resumo</Button>
+                  <SoundFocus>
+                    <Button
+                      variant="pokemon"
+                      className="bg-red-600 text-white hover:opacity-50 focus:bg-white focus:text-black"
+                    >
+                      Gerar Resumo
+                    </Button>
+                  </SoundFocus>
                 </div>
               )}
             </DetailsGridContent>

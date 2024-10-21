@@ -13,12 +13,12 @@ export type ScrollMenuButtonProps = {
   icon: React.ReactNode;
   isActive?: boolean;
   setActive?: () => void;
-};
+} & React.ButtonHTMLAttributes<HTMLButtonElement>;
 
 export const ScrollMenuButton = forwardRef<
   HTMLButtonElement,
   ScrollMenuButtonProps
->(({ icon, isActive = false, setActive }, ref) => {
+>(({ icon, isActive = false, setActive, disabled, ...props }, ref) => {
   const buttonRef = useRef<HTMLButtonElement | null>(null);
 
   useEffect(() => {
@@ -29,6 +29,7 @@ export const ScrollMenuButton = forwardRef<
 
   return (
     <button
+      {...props}
       ref={(node) => {
         buttonRef.current = node;
         if (typeof ref === 'function') {
@@ -37,14 +38,16 @@ export const ScrollMenuButton = forwardRef<
           ref.current = node;
         }
       }}
+      disabled={disabled}
       data-active={isActive}
-      className={`flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 ${
+      className={`flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 disabled:opacity-50 ${
         isActive
           ? 'text-black [&>svg]:size-8 sm:[&>svg]:size-10 md:[&>svg]:size-14'
           : 'text-white focus:opacity-60 hover:opacity-60'
       } rounded-md transition-colors duration-200`}
-      onClick={setActive}
+      onClick={disabled ? undefined : setActive}
       onKeyDown={(e) => {
+        if (disabled) return;
         if (e.key === 'Enter' || e.key === ' ') {
           setActive?.();
         }
@@ -63,7 +66,7 @@ export const ScrollMenu = ({ children }: ScrollMenuProps) => {
   const [startIndex, setStartIndex] = useState(0);
 
   const totalButtons = React.Children.count(children);
-  const visibleButtons = 5;
+  const visibleButtons = 3;
 
   const activeIndex = useMenuStore((state) => state.activeIndex);
   const setActiveIndex = useMenuStore((state) => state.setActiveIndex);
@@ -77,19 +80,15 @@ export const ScrollMenu = ({ children }: ScrollMenuProps) => {
   const handleScroll = (direction: 'left' | 'right') => {
     if (direction === 'right') {
       if (activeIndex < visibleButtons - 1) {
-        // If not at the last visible button, just move the active index
         setActiveIndex(activeIndex + 1);
       } else {
-        // If at the last visible button, scroll and reset active index
         setStartIndex((startIndex + 1) % totalButtons);
         setActiveIndex(0);
       }
     } else {
       if (activeIndex > 0) {
-        // If not at the first visible button, just move the active index
         setActiveIndex(activeIndex - 1);
       } else {
-        // If at the first visible button, scroll and set active index to last visible
         setStartIndex((startIndex - 1 + totalButtons) % totalButtons);
         setActiveIndex(visibleButtons - 1);
       }

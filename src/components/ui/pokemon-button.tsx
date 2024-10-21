@@ -46,7 +46,7 @@ export const PokemonButton = forwardRef<HTMLButtonElement, PokemonButtonProps>(
 
     useEffect(() => {
       if (isSelected && (audioRef.current?.paused || !audioRef.current)) {
-        const audio = new Audio('/assets/audio/focus.wav');
+        const audio = new Audio('/assets/audio/focus.ogg');
         audioRef.current = audio;
         audio.volume = 0.05;
         audio.play();
@@ -60,7 +60,7 @@ export const PokemonButton = forwardRef<HTMLButtonElement, PokemonButtonProps>(
         onFocus={(e) => {
           onFocus?.(e);
           if (!isSelected) {
-            const audio = new Audio('/assets/audio/focus.wav');
+            const audio = new Audio('/assets/audio/focus.ogg');
             audioRef.current = audio;
             audio.volume = 0.05;
             audio.play();
